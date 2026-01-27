@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git 学习网站</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #fff;
+            border-bottom: 2px solid #e1e8ed;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: #0366d6 !important;
+            font-size: 1.25rem;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 56px;
+            width: 260px;
+            height: calc(100vh - 56px);
+            background: #fff;
+            border-right: 1px solid #e1e8ed;
+            overflow-y: auto;
+            padding: 1rem 0;
+            z-index: 1000;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav-item {
+            margin: 0;
+        }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            color: #586069;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav-link:hover {
+            background-color: #f6f8fa;
+            color: #0366d6;
+            border-left-color: #0366d6;
+        }
+
+        .sidebar-nav-link.active {
+            background-color: #edf5ff;
+            color: #0366d6;
+            border-left-color: #0366d6;
+            font-weight: 600;
+        }
+
+        .sidebar-nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-subnav {
+            list-style: none;
+            padding-left: 2.5rem;
+            margin: 0;
+            display: none;
+            background: #fafbfc;
+        }
+
+        .sidebar-subnav.show {
+            display: block;
+        }
+
+        .sidebar-subnav-link {
+            display: block;
+            padding: 0.5rem 1.25rem;
+            color: #586069;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            margin: 0.05rem 0;
+        }
+
+        .sidebar-subnav-link:hover {
+            color: #0366d6;
+            background-color: #f6f8fa;
+        }
+
+        .sidebar-subnav-link.active {
+            color: #0366d6;
+            font-weight: 600;
+            background-color: #edf5ff;
+        }
+
+        .nav-toggle i.chevron {
+            margin-left: auto;
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .nav-toggle.collapsed i.chevron {
+            transform: rotate(-90deg);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: calc(100vh - 56px);
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        .description {
+            color: #586069;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        /* 卡片样式 */
+        .card {
+            border: 1px solid #e1e8ed;
+            border-radius: 6px;
+            background: #fff;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* 命令框 */
+        .command-box {
+            background: #24292e;
+            color: #fff;
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border: 1px solid #d1d5da;
+        }
+
+        .command-name {
+            color: #79c0ff;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* 示例框 */
+        .example-box {
+            background: #f6f8fa;
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid #0366d6;
+            border: 1px solid #e1e8ed;
+        }
+
+        /* 提示框 */
+        .tip-box {
+            background: #fff8c5;
+            border: 1px solid #e1e8ed;
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 3px solid #ffd33d;
+        }
+
+        .tip-box i {
+            color: #d9a406;
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* 页脚 */
+        footer {
+            background: #24292e;
+            color: #fff;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            margin-left: 260px;
+        }
+
+        footer p {
+            margin: 0.25rem 0;
+        }
+
+        /* 滚动条 */
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #f6f8fa;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c8c8c8;
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #b8b8b8;
+        }
+
+        /* 按钮样式 */
+        .btn-toggle-sidebar {
+            background: #fff;
+            border: 1px solid #d1d5da;
+            color: #24292e;
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-toggle-sidebar:hover {
+            background: #f6f8fa;
+        }
+
+        /* 分隔线 */
+        hr {
+            border: none;
+            border-top: 1px solid #e1e8ed;
+            margin: 1.5rem 0;
+        }
+
+        /* 徽章 */
+        .badge-custom {
+            background: #0366d6;
+            color: #fff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            footer {
+                margin-left: 0;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.35rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container-fluid">
+            <button class="btn btn-toggle-sidebar d-lg-none me-2" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-journal-bookmark"></i> Git 学习网站
+            </a>
+            <div class="ms-auto">
+                <span class="badge-custom">Git 2.50</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 左侧导航树 -->
+    <aside class="sidebar" id="sidebar">
+        <ul class="sidebar-nav">
+            <!-- Git 基础 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#basics-nav">
+                    <i class="bi bi-book"></i>
+                    <span>Git 基础</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </a>
+                <ul class="sidebar-subnav collapse show" id="basics-nav">
+                    <li><a class="sidebar-subnav-link active" data-section="init">初始化仓库</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="add">添加文件</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="commit">提交更改</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="status">查看状态</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="log">查看历史</a></li>
+                </ul>
+            </li>
+
+            <!-- 分支管理 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#branching-nav">
+                    <i class="bi bi-git"></i>
+                    <span>分支管理</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </a>
+                <ul class="sidebar-subnav collapse" id="branching-nav">
+                    <li><a class="sidebar-subnav-link" data-section="branch-view">查看分支</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="branch-create">创建分支</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="branch-switch">切换分支</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="branch-merge">合并分支</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="branch-delete">删除分支</a></li>
+                </ul>
+            </li>
+
+            <!-- 远程操作 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#remote-nav">
+                    <i class="bi bi-cloud"></i>
+                    <span>远程操作</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </a>
+                <ul class="sidebar-subnav collapse" id="remote-nav">
+                    <li><a class="sidebar-subnav-link" data-section="remote-add">添加远程</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="clone">克隆仓库</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="push">推送代码</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="pull">拉取代码</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="fetch">获取更新</a></li>
+                </ul>
+            </li>
+
+            <!-- 高级技巧 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#advanced-nav">
+                    <i class="bi bi-lightning"></i>
+                    <span>高级技巧</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </a>
+                <ul class="sidebar-subnav collapse" id="advanced-nav">
+                    <li><a class="sidebar-subnav-link" data-section="stash">暂存工作</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="reset">撤销提交</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="rebase">变基操作</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="cherry-pick">选择提交</a></li>
+                </ul>
+            </li>
+
+            <!-- AI 辅助 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#ai-nav">
+                    <i class="bi bi-robot"></i>
+                    <span>AI 辅助</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </a>
+                <ul class="sidebar-subnav collapse" id="ai-nav">
+                    <li><a class="sidebar-subnav-link" data-section="ai-commit">AI 生成提交</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="ai-review">AI 代码审查</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="ai-conflict">AI 冲突解决</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="ai-predict">AI 命令预测</a></li>
+                </ul>
+            </li>
+
+            <!-- 现代实践 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#modern-nav">
+                    <i class="bi bi-rocket"></i>
+                    <span>现代实践</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </a>
+                <ul class="sidebar-subnav collapse" id="modern-nav">
+                    <li><a class="sidebar-subnav-link" data-section="gpg">GPG 签名</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="conventional">Conventional Commits</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="partial-clone">Partial Clone</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="sparse-checkout">Sparse Checkout</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="performance">性能优化</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- Git 基础内容 -->
+        <div id="content-init" class="content-section active">
+            <h2 class="section-title">初始化仓库</h2>
+            <p class="description">创建一个新的Git仓库，开始版本控制之旅。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git init [目录名]</span>
+                    </div>
+                    <p><strong>描述：</strong>在指定目录或当前目录初始化Git仓库</p>
+                    <div class="example-box">
+                        # 在当前目录初始化<br>
+                        git init<br><br>
+                        # 创建并初始化新目录<br>
+                        git init my-project
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>执行后会在目录中创建.git文件夹，包含所有版本控制信息。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-add" class="content-section">
+            <h2 class="section-title">添加文件到暂存区</h2>
+            <p class="description">将文件更改添加到Git的暂存区，准备提交。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git add [文件/目录]</span>
+                    </div>
+                    <p><strong>描述：</strong>将文件或目录添加到暂存区</p>
+                    <div class="example-box">
+                        # 添加所有更改<br>
+                        git add .<br><br>
+                        # 添加特定文件<br>
+                        git add app.js<br><br>
+                        # 添加多个文件<br>
+                        git add app.js styles.css<br><br>
+                        # 添加所有txt文件<br>
+                        git add *.txt
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>使用<code>git add -p</code>可以交互式地选择要添加的更改部分。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-commit" class="content-section">
+            <h2 class="section-title">提交更改</h2>
+            <p class="description">将暂存区的更改永久保存到Git历史中。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git commit -m "提交信息"</span>
+                    </div>
+                    <p><strong>描述：</strong>提交暂存区的更改</p>
+                    <div class="example-box">
+                        # 基本提交<br>
+                        git commit -m "Initial commit"<br><br>
+                        # 跳过暂存区直接提交<br>
+                        git commit -am "Fix login bug"<br><br>
+                        # 修改最后一次提交<br>
+                        git commit --amend -m "Updated message"
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>推荐使用Conventional Commits格式，如<code>feat: 添加新功能</code>。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-status" class="content-section">
+            <h2 class="section-title">查看状态</h2>
+            <p class="description">查看工作区和暂存区的当前状态。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git status</span>
+                    </div>
+                    <p><strong>描述：</strong>显示工作区状态</p>
+                    <div class="example-box">
+                        # 查看详细状态<br>
+                        git status<br><br>
+                        # 查看简洁状态<br>
+                        git status -s<br><br>
+                        # 查看分支状态<br>
+                        git status -sb
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>会显示已修改、已暂存和未跟踪的文件。Git 2.50版本改进了状态显示的可读性。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-log" class="content-section">
+            <h2 class="section-title">查看历史</h2>
+            <p class="description">查看项目的提交历史记录。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git log [选项]</span>
+                    </div>
+                    <p><strong>描述：</strong>查看提交历史</p>
+                    <div class="example-box">
+                        # 查看完整历史<br>
+                        git log<br><br>
+                        # 查看简洁历史<br>
+                        git log --oneline<br><br>
+                        # 查看图形化历史<br>
+                        git log --graph --oneline<br><br>
+                        # 查看特定文件历史<br>
+                        git log --follow file.js
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>按<code>q</code>退出日志查看。现代Git日志输出更加美观和直观。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分支管理内容 -->
+        <div id="content-branch-view" class="content-section">
+            <h2 class="section-title">查看分支</h2>
+            <p class="description">查看本地和远程的所有分支。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git branch [选项]</span>
+                    </div>
+                    <p><strong>描述：</strong>列出、创建或删除分支</p>
+                    <div class="example-box">
+                        # 查看本地分支<br>
+                        git branch<br><br>
+                        # 查看所有分支（包括远程）<br>
+                        git branch -a<br><br>
+                        # 查看远程分支<br>
+                        git branch -r<br><br>
+                        # 查看分支详细信息<br>
+                        git branch -vv
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>当前分支会显示星号(*)标记。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-branch-create" class="content-section">
+            <h2 class="section-title">创建分支</h2>
+            <p class="description">创建新的开发分支。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git branch [分支名]</span>
+                    </div>
+                    <p><strong>描述：</strong>创建新分支</p>
+                    <div class="example-box">
+                        # 创建新分支<br>
+                        git branch feature-login<br><br>
+                        # 从指定提交创建分支<br>
+                        git branch feature-login abc123<br><br>
+                        # 创建并切换到新分支<br>
+                        git checkout -b feature-login
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>推荐使用描述性的分支名，如<code>feature/</code>、<code>bugfix/</code>前缀。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-branch-switch" class="content-section">
+            <h2 class="section-title">切换分支</h2>
+            <p class="description">在不同的分支之间切换。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git checkout [分支名]</span>
+                    </div>
+                    <p><strong>描述：</strong>切换到指定分支</p>
+                    <div class="example-box">
+                        # 切换到分支<br>
+                        git checkout feature-login<br><br>
+                        # 使用switch命令（Git 2.23+）<br>
+                        git switch feature-login<br><br>
+                        # 切换到上一个分支<br>
+                        git checkout -
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>确保当前工作区是干净的，或使用<code>git stash</code>保存未提交的更改。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-branch-merge" class="content-section">
+            <h2 class="section-title">合并分支</h2>
+            <p class="description">将一个分支的更改合并到当前分支。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git merge [分支名]</span>
+                    </div>
+                    <p><strong>描述：</strong>合并指定分支到当前分支</p>
+                    <div class="example-box">
+                        # 合并分支<br>
+                        git merge feature-login<br><br>
+                        # 禁用快进合并<br>
+                        git merge --no-ff feature-login<br><br>
+                        # 中断合并<br>
+                        git merge --abort
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>如果出现冲突，需要手动解决冲突后再次提交。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-branch-delete" class="content-section">
+            <h2 class="section-title">删除分支</h2>
+            <p class="description">删除不再需要的分支。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git branch -d [分支名]</span>
+                    </div>
+                    <p><strong>描述：</strong>删除分支</p>
+                    <div class="example-box">
+                        # 删除已合并的分支<br>
+                        git branch -d feature-login<br><br>
+                        # 强制删除分支<br>
+                        git branch -D feature-login<br><br>
+                        # 删除远程分支<br>
+                        git push origin --delete feature-login
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong><code>-d</code>只删除已合并的分支，<code>-D</code>可以删除未合并的分支（谨慎使用）。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 远程操作内容 -->
+        <div id="content-remote-add" class="content-section">
+            <h2 class="section-title">添加远程仓库</h2>
+            <p class="description">关联本地仓库到远程仓库。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git remote add [名称] [URL]</span>
+                    </div>
+                    <p><strong>描述：</strong>添加远程仓库</p>
+                    <div class="example-box">
+                        # 添加origin远程仓库<br>
+                        git remote add origin https://github.com/user/repo.git<br><br>
+                        # 查看远程仓库<br>
+                        git remote -v<br><br>
+                        # 修改远程仓库URL<br>
+                        git remote set-url origin https://github.com/user/new-repo.git
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>origin是远程仓库的默认名称，可以自定义多个远程仓库。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-clone" class="content-section">
+            <h2 class="section-title">克隆仓库</h2>
+            <p class="description">从远程仓库克隆到本地。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git clone [URL] [目录]</span>
+                    </div>
+                    <p><strong>描述：</strong>克隆远程仓库</p>
+                    <div class="example-box">
+                        # 克隆到当前目录<br>
+                        git clone https://github.com/user/repo.git<br><br>
+                        # 克隆到指定目录<br>
+                        git clone https://github.com/user/repo.git my-project<br><br>
+                        # 克隆特定分支<br>
+                        git clone -b develop https://github.com/user/repo.git
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>克隆后会自动创建.git文件夹，并设置origin远程仓库。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-push" class="content-section">
+            <h2 class="section-title">推送代码</h2>
+            <p class="description">将本地提交推送到远程仓库。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git push [远程] [分支]</span>
+                    </div>
+                    <p><strong>描述：</strong>推送本地分支到远程</p>
+                    <div class="example-box">
+                        # 推送当前分支<br>
+                        git push origin main<br><br>
+                        # 推送并设置上游分支<br>
+                        git push -u origin main<br><br>
+                        # 推送所有分支<br>
+                        git push --all origin<br><br>
+                        # 强制推送（谨慎使用）<br>
+                        git push --force origin main
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong><code>-u</code>参数设置上游分支后，后续只需执行<code>git push</code>。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-pull" class="content-section">
+            <h2 class="section-title">拉取代码</h2>
+            <p class="description">从远程仓库拉取最新代码并合并。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git pull [远程] [分支]</span>
+                    </div>
+                    <p><strong>描述：</strong>拉取并合并远程更新</p>
+                    <div class="example-box">
+                        # 拉取当前分支<br>
+                        git pull origin main<br><br>
+                        # 拉取并变基<br>
+                        git pull --rebase origin main<br><br>
+                        # 只拉取不合并<br>
+                        git fetch origin main
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong><code>git pull</code>等同于<code>git fetch</code> + <code>git merge</code>。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-fetch" class="content-section">
+            <h2 class="section-title">获取更新</h2>
+            <p class="description">从远程仓库获取最新更新但不合并。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git fetch [远程]</span>
+                    </div>
+                    <p><strong>描述：</strong>获取远程更新</p>
+                    <div class="example-box">
+                        # 获取所有远程更新<br>
+                        git fetch<br><br>
+                        # 获取特定远程仓库<br>
+                        git fetch origin<br><br>
+                        # 获取特定分支<br>
+                        git fetch origin main
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>获取后可以查看差异再决定是否合并，这是更安全的工作方式。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 高级技巧内容 -->
+        <div id="content-stash" class="content-section">
+            <h2 class="section-title">暂存工作</h2>
+            <p class="description">临时保存当前工作区的更改。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git stash [命令]</span>
+                    </div>
+                    <p><strong>描述：</strong>暂存当前工作区的更改</p>
+                    <div class="example-box">
+                        # 暂存当前更改<br>
+                        git stash<br><br>
+                        # 带消息暂存<br>
+                        git stash save "work in progress"<br><br>
+                        # 恢复最近暂存<br>
+                        git stash pop<br><br>
+                        # 查看暂存列表<br>
+                        git stash list
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>在切换分支前使用，避免未提交的更改造成冲突。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-reset" class="content-section">
+            <h2 class="section-title">撤销提交</h2>
+            <p class="description">撤销或修改提交历史。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git reset [模式] [提交]</span>
+                    </div>
+                    <p><strong>描述：</strong>重置当前分支到指定状态</p>
+                    <div class="example-box">
+                        # 撤销最后一次提交但保留更改<br>
+                        git reset HEAD~1<br><br>
+                        # 撤销提交并删除更改<br>
+                        git reset --hard HEAD~1<br><br>
+                        # 修改最后一次提交<br>
+                        git commit --amend
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong><code>--soft</code>保留更改在暂存区，<code>--mixed</code>保留更改在工作区，<code>--hard</code>完全删除。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-rebase" class="content-section">
+            <h2 class="section-title">变基操作</h2>
+            <p class="description">重新应用提交到另一个基础。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git rebase [分支]</span>
+                    </div>
+                    <p><strong>描述：</strong>变基操作，线性化提交历史</p>
+                    <div class="example-box">
+                        # 变基到main分支<br>
+                        git rebase main<br><br>
+                        # 交互式变基<br>
+                        git rebase -i HEAD~3<br><br>
+                        # 跳过变基<br>
+                        git rebase --skip<br><br>
+                        # 中止变基<br>
+                        git rebase --abort
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>现代Git提供了更友好的交互式rebase界面。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-cherry-pick" class="content-section">
+            <h2 class="section-title">选择提交</h2>
+            <p class="description">选择特定提交应用到当前分支。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">git cherry-pick [提交]</span>
+                    </div>
+                    <p><strong>描述：</strong>选择特定提交应用</p>
+                    <div class="example-box">
+                        # 选择单个提交<br>
+                        git cherry-pick abc123<br><br>
+                        # 选择多个提交<br>
+                        git cherry-pick abc123..def456<br><br>
+                        # 选择但不自动提交<br>
+                        git cherry-pick -n abc123
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>需要提供完整的commit hash，可以使用<code>git log</code>查看。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI 辅助内容 -->
+        <div id="content-ai-commit" class="content-section">
+            <h2 class="section-title">AI 生成提交信息</h2>
+            <p class="description">使用AI工具分析代码变更，生成符合规范的提交信息。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">AI Commit Generation</span>
+                    </div>
+                    <p><strong>描述：</strong>AI辅助生成提交信息</p>
+                    <div class="example-box">
+                        # GitHub Copilot CLI<br>
+                        git add .<br>
+                        git commit -m "$(gh copilot suggest '生成描述这些变更的提交信息')"<br><br>
+                        # Gitmoji AI 助手<br>
+                        git commit -m "$(gitmoji -ai)"<br><br>
+                        # 自定义AI脚本<br>
+                        git commit -m "$(python ai-commit-generator.py)"
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>AI能够理解代码语义，生成符合Conventional Commits规范的提交信息。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-ai-review" class="content-section">
+            <h2 class="section-title">AI 代码审查</h2>
+            <p class="description">使用AI分析Pull Request，提供代码质量建议。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">AI Code Review</span>
+                    </div>
+                    <p><strong>描述：</strong>AI辅助代码审查</p>
+                    <div class="example-box">
+                        # GitHub Copilot 自动审查<br>
+                        # AI会自动检测潜在的bug、性能问题和安全漏洞<br><br>
+                        # GitLab Duo AI 审查<br>
+                        gitlab-duo review feature/new-ui<br><br>
+                        # 本地AI审查工具<br>
+                        ai-review --diff HEAD~1
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>AI审查可以捕捉人工可能遗漏的问题，如未处理的边界条件、安全漏洞、性能优化机会等。主流平台都已集成AI审查功能。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-ai-conflict" class="content-section">
+            <h2 class="section-title">AI 冲突解决</h2>
+            <p class="description">AI辅助理解和解决Git合并冲突。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">AI Conflict Resolution</span>
+                    </div>
+                    <p><strong>描述：</strong>AI辅助冲突解决</p>
+                    <div class="example-box">
+                        # 使用 AI 理解冲突<br>
+                        git conflict explain<br><br>
+                        # AI 建议合并策略<br>
+                        git merge-suggest feature/new-ui<br><br>
+                        # AI 自动解决简单冲突<br>
+                        git resolve-conflict --ai file.js
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>现代Git工具已集成AI，可以解释冲突上下文并建议最佳合并方案。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-ai-predict" class="content-section">
+            <h2 class="section-title">AI 命令预测</h2>
+            <p class="description">AI根据上下文预测下一个Git命令。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">AI Command Prediction</span>
+                    </div>
+                    <p><strong>描述：</strong>AI预测下一个命令</p>
+                    <div class="example-box">
+                        # GitSense AI（假设的AI助手）<br>
+                        $ git [Tab]<br>
+                        # AI提示：根据您的更改，可能需要：<br>
+                        #   git add modified-file.js<br>
+                        #   git commit -m "fix: 修复登录验证逻辑"<br>
+                        #   git push origin feature/login<br><br>
+                        # 配置shell集成<br>
+                        eval "$(git-predict init)"
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>AI命令预测基于项目历史和个人使用模式，学习您的习惯并提供个性化建议。现代智能终端（如Warp、Fig）都集成了此功能。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 现代实践内容 -->
+        <div id="content-gpg" class="content-section">
+            <h2 class="section-title">GPG 签名验证</h2>
+            <p class="description">使用GPG/SSH密钥签名提交，验证作者身份。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">Git GPG Signing</span>
+                    </div>
+                    <p><strong>描述：</strong>启用GPG签名验证</p>
+                    <div class="example-box">
+                        # 配置GPG签名<br>
+                        git config --global commit.gpgsign true<br>
+                        git config --global gpg.program gpg2<br><br>
+                        # 查看签名状态<br>
+                        git log --show-signature<br><br>
+                        # 使用SSH签名<br>
+                        git config --global commit.gpgsign true<br>
+                        git config --global gpg.format ssh
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>主流平台（GitHub/GitLab）推荐使用签名验证提交，提高代码可信度。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-conventional" class="content-section">
+            <h2 class="section-title">Conventional Commits</h2>
+            <p class="description">遵循规范化的提交信息格式。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">Conventional Commits</span>
+                    </div>
+                    <p><strong>描述：</strong>规范化提交信息格式</p>
+                    <div class="example-box">
+                        # 格式: type(scope): subject<br>
+                        git commit -m "feat(auth): 添加OAuth2登录支持"<br>
+                        git commit -m "fix(api): 修复用户数据获取bug"<br>
+                        git commit -m "docs(readme): 更新安装说明"<br>
+                        git commit -m "style(button): 优化按钮样式"<br><br>
+                        # 安装commitlint<br>
+                        npm install @commitlint/cli @commitlint/config-conventional
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>使用commitlint工具自动验证提交信息格式，便于自动生成变更日志。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-partial-clone" class="content-section">
+            <h2 class="section-title">Partial Clone</h2>
+            <p class="description">部分克隆大型仓库，节省时间和空间。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">Git Partial Clone</span>
+                    </div>
+                    <p><strong>描述：</strong>部分克隆大型仓库</p>
+                    <div class="example-box">
+                        # 按需克隆（不下载历史）<br>
+                        git clone --filter=blob:none https://github.com/user/repo.git<br><br>
+                        # 仅克隆特定分支<br>
+                        git clone --single-branch --branch main repo.git<br><br>
+                        # 克隆特定文件<br>
+                        git clone --depth 1 --filter=blob:limit=1m repo.git
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>对于包含大型媒体文件或历史的仓库，部分克隆可提速90%以上。Git 2.50版本进一步优化了partial clone的性能。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-sparse-checkout" class="content-section">
+            <h2 class="section-title">Sparse Checkout</h2>
+            <p class="description">只检出仓库的特定目录。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">Git Sparse Checkout</span>
+                    </div>
+                    <p><strong>描述：</strong>稀疏检出特定目录</p>
+                    <div class="example-box">
+                        # 启用稀疏检出<br>
+                        git clone --no-checkout repo.git<br>
+                        cd repo<br>
+                        git sparse-checkout init<br>
+                        git sparse-checkout set src/api docs<br><br>
+                        # 添加更多目录<br>
+                        git sparse-checkout add src/components<br><br>
+                        # 禁用稀疏检出<br>
+                        git sparse-checkout disable
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>在monorepo项目中，只检出需要的目录可以大幅减少磁盘占用。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-performance" class="content-section">
+            <h2 class="section-title">性能优化</h2>
+            <p class="description">优化大型仓库的性能。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">Git Performance Optimization</span>
+                    </div>
+                    <p><strong>描述：</strong>优化Git性能</p>
+                    <div class="example-box">
+                        # 启用并行索引操作<br>
+                        git config --global core.parallelIndex 8<br><br>
+                        # 优化大文件处理<br>
+                        git lfs install<br>
+                        git lfs track "*.psd"<br><br>
+                        # 使用Git 2.50+的新索引格式<br>
+                        git update-index --index-version 4<br><br>
+                        # 清理无用文件<br>
+                        git gc --prune=now
+                    </div>
+<div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>Git 2.50版本增强了分支信息的显示。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-2">
+                <i class="bi bi-heart-fill text-danger"></i> Git 学习网站 - 快速掌握Git版本控制
+            </p>
+            <p class="mb-0 text-secondary">Built with Bootstrap 5.3 | 纯静态网站 | 包含AI辅助和现代实践</p>
+            <p class="mb-0 text-secondary mt-2">Git版本: 2.50</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 侧边栏切换（移动端）
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+            });
+        }
+
+        // 导航树点击处理
+        const subnavLinks = document.querySelectorAll('.sidebar-subnav-link');
+
+        subnavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // 移除所有激活状态
+                subnavLinks.forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+
+                // 添加当前激活状态
+                link.classList.add('active');
+
+                // 显示对应内容
+                const section = link.getAttribute('data-section');
+                const contentSection = document.getElementById('content-' + section);
+                if (contentSection) {
+                    contentSection.classList.add('active');
+                }
+
+                // 移动端点击后关闭侧边栏
+                if (window.innerWidth < 992) {
+                    sidebar.classList.remove('show');
+                }
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // 导航树折叠/展开
+        const navToggles = document.querySelectorAll('.nav-toggle');
+
+        navToggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                const targetId = toggle.getAttribute('href');
+                const target = document.querySelector(targetId);
+
+                if (target) {
+                    target.classList.toggle('show');
+                    toggle.classList.toggle('collapsed');
+                }
+            });
+        });
+
+        // 点击主内容区域关闭移动端侧边栏
+        const mainContent = document.querySelector('.main-content');
+
+        if (mainContent && window.innerWidth < 992) {
+            mainContent.addEventListener('click', () => {
+                sidebar.classList.remove('show');
+            });
+        }
+    </script>
+</body>
+</html>
