@@ -89,6 +89,26 @@
             text-align: center;
         }
 
+        /* 一级导航的加号/减号 */
+        .sidebar-nav-link .expand-icon {
+            margin-left: auto;
+            font-size: 0.85rem;
+            color: #586069;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav-link:hover .expand-icon {
+            color: #0366d6;
+        }
+
+        .sidebar-nav-link.collapsed .expand-icon::before {
+            content: "+";
+        }
+
+        .sidebar-nav-link:not(.collapsed) .expand-icon::before {
+            content: "−";
+        }
+
         .sidebar-subnav {
             list-style: none;
             padding-left: 2.5rem;
@@ -102,7 +122,8 @@
         }
 
         .sidebar-subnav-link {
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 0.5rem 1.25rem;
             color: #586069;
             text-decoration: none;
@@ -110,6 +131,19 @@
             transition: all 0.2s;
             cursor: pointer;
             margin: 0.05rem 0;
+        }
+
+        /* 二级导航的减号 */
+        .sidebar-subnav-link::before {
+            content: "−";
+            margin-right: 0.5rem;
+            font-size: 0.8rem;
+            color: #586069;
+            font-weight: 300;
+        }
+
+        .sidebar-subnav-link:hover::before {
+            color: #0366d6;
         }
 
         .sidebar-subnav-link:hover {
@@ -121,16 +155,6 @@
             color: #0366d6;
             font-weight: 600;
             background-color: #edf5ff;
-        }
-
-        .nav-toggle i.chevron {
-            margin-left: auto;
-            transition: transform 0.2s;
-            font-size: 0.75rem;
-        }
-
-        .nav-toggle.collapsed i.chevron {
-            transform: rotate(-90deg);
         }
 
         /* 主内容区域 */
@@ -223,19 +247,6 @@
             font-size: 1.1rem;
         }
 
-        /* 页脚 */
-        footer {
-            background: #24292e;
-            color: #fff;
-            padding: 2rem 0;
-            margin-top: 3rem;
-            margin-left: 260px;
-        }
-
-        footer p {
-            margin: 0.25rem 0;
-        }
-
         /* 滚动条 */
         .sidebar::-webkit-scrollbar {
             width: 8px;
@@ -302,10 +313,6 @@
                 padding: 1rem;
             }
 
-            footer {
-                margin-left: 0;
-            }
-
             .section-title {
                 font-size: 1.5rem;
             }
@@ -354,7 +361,7 @@
                 <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#basics-nav">
                     <i class="bi bi-book"></i>
                     <span>Git 基础</span>
-                    <i class="bi bi-chevron-down chevron"></i>
+                    <span class="expand-icon"></span>
                 </a>
                 <ul class="sidebar-subnav collapse show" id="basics-nav">
                     <li><a class="sidebar-subnav-link active" data-section="init">初始化仓库</a></li>
@@ -362,6 +369,8 @@
                     <li><a class="sidebar-subnav-link" data-section="commit">提交更改</a></li>
                     <li><a class="sidebar-subnav-link" data-section="status">查看状态</a></li>
                     <li><a class="sidebar-subnav-link" data-section="log">查看历史</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="use-cases">适用场景</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="not-use-cases">不适用场景</a></li>
                 </ul>
             </li>
 
@@ -370,7 +379,7 @@
                 <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#branching-nav">
                     <i class="bi bi-git"></i>
                     <span>分支管理</span>
-                    <i class="bi bi-chevron-down chevron"></i>
+                    <span class="expand-icon"></span>
                 </a>
                 <ul class="sidebar-subnav collapse" id="branching-nav">
                     <li><a class="sidebar-subnav-link" data-section="branch-view">查看分支</a></li>
@@ -386,7 +395,7 @@
                 <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#remote-nav">
                     <i class="bi bi-cloud"></i>
                     <span>远程操作</span>
-                    <i class="bi bi-chevron-down chevron"></i>
+                    <span class="expand-icon"></span>
                 </a>
                 <ul class="sidebar-subnav collapse" id="remote-nav">
                     <li><a class="sidebar-subnav-link" data-section="remote-add">添加远程</a></li>
@@ -397,12 +406,44 @@
                 </ul>
             </li>
 
+            <!-- 日常使用 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#daily-nav">
+                    <i class="bi bi-person-workspace"></i>
+                    <span>日常使用</span>
+                    <span class="expand-icon"></span>
+                </a>
+                <ul class="sidebar-subnav collapse" id="daily-nav">
+                    <li><a class="sidebar-subnav-link" data-section="daily-workflow">日常工作流</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="daily-fix-bug">修复Bug流程</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="daily-hotfix">紧急修复</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="daily-alias">常用别名</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="daily-ignore">忽略文件</a></li>
+                </ul>
+            </li>
+
+            <!-- 内部原理 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#internal-nav">
+                    <i class="bi bi-cpu"></i>
+                    <span>内部原理</span>
+                    <span class="expand-icon"></span>
+                </a>
+                <ul class="sidebar-subnav collapse" id="internal-nav">
+                    <li><a class="sidebar-subnav-link" data-section="internal-storage">存储结构</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="internal-object">对象模型</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="internal-index">索引机制</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="internal-ref">引用机制</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="internal-commands">命令原理</a></li>
+                </ul>
+            </li>
+
             <!-- 高级技巧 -->
             <li class="sidebar-nav-item">
                 <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#advanced-nav">
                     <i class="bi bi-lightning"></i>
                     <span>高级技巧</span>
-                    <i class="bi bi-chevron-down chevron"></i>
+                    <span class="expand-icon"></span>
                 </a>
                 <ul class="sidebar-subnav collapse" id="advanced-nav">
                     <li><a class="sidebar-subnav-link" data-section="stash">暂存工作</a></li>
@@ -417,7 +458,7 @@
                 <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#ai-nav">
                     <i class="bi bi-robot"></i>
                     <span>AI 辅助</span>
-                    <i class="bi bi-chevron-down chevron"></i>
+                    <span class="expand-icon"></span>
                 </a>
                 <ul class="sidebar-subnav collapse" id="ai-nav">
                     <li><a class="sidebar-subnav-link" data-section="ai-commit">AI 生成提交</a></li>
@@ -432,7 +473,7 @@
                 <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#modern-nav">
                     <i class="bi bi-rocket"></i>
                     <span>现代实践</span>
-                    <i class="bi bi-chevron-down chevron"></i>
+                    <span class="expand-icon"></span>
                 </a>
                 <ul class="sidebar-subnav collapse" id="modern-nav">
                     <li><a class="sidebar-subnav-link" data-section="gpg">GPG 签名</a></li>
@@ -572,6 +613,215 @@
                         <strong>提示：</strong>按<code>q</code>退出日志查看。现代Git日志输出更加美观和直观。
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="content-use-cases" class="content-section">
+            <h2 class="section-title">Git 适用场景</h2>
+            <p class="description">了解哪些情况下适合使用Git进行版本控制。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">软件开发项目</h4>
+                    <p class="mb-3">Git最核心的应用场景，管理源代码的版本迭代。</p>
+                    <div class="example-box">
+                        ✅ Web应用程序开发<br>
+                        ✅ 移动应用开发<br>
+                        ✅ 桌面应用开发<br>
+                        ✅ 游戏开发<br>
+                        ✅ API服务开发
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">文档与写作</h4>
+                    <p class="mb-3">协作写作和文档版本管理，追踪每次修改。</p>
+                    <div class="example-box">
+                        ✅ 技术文档（Markdown、reStructuredText）<br>
+                        ✅ 学术论文（LaTeX）<br>
+                        ✅ 书籍写作<br>
+                        ✅ 博客文章<br>
+                        ✅ 法律合同文本
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">配置文件管理</h4>
+                    <p class="mb-3">管理服务器配置、系统设置等文件的变更。</p>
+                    <div class="example-box">
+                        ✅ 服务器配置文件<br>
+                        ✅ Docker/Kubernetes配置<br>
+                        ✅ CI/CD流水线配置<br>
+                        ✅ 云基础设施代码（Terraform）<br>
+                        ✅ 系统脚本和工具
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">设计资源管理</h4>
+                    <p class="mb-3">管理设计文件和创意资源（配合Git LFS）。</p>
+                    <div class="example-box">
+                        ✅ UI设计稿（SVG格式）<br>
+                        ✅ 图标库<br>
+                        ✅ 字体文件<br>
+                        ✅ 设计规范文档<br>
+                        ✅ 品牌资产
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">数据科学与研究</h4>
+                    <p class="mb-3">管理研究代码、实验配置和分析脚本。</p>
+                    <div class="example-box">
+                        ✅ 数据分析脚本（Python/R）<br>
+                        ✅ 机器学习模型代码<br>
+                        ✅ 实验配置文件<br>
+                        ✅ 研究项目代码<br>
+                        ✅ 可复现性研究代码
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">教育与学习</h4>
+                    <p class="mb-3">课程项目、学习笔记和教学材料的版本管理。</p>
+                    <div class="example-box">
+                        ✅ 课程作业<br>
+                        ✅ 学习笔记<br>
+                        ✅ 教学课件<br>
+                        ✅ 编程练习<br>
+                        ✅ 开源学习项目
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <i class="bi bi-lightbulb"></i>
+                <strong>提示：</strong>Git不仅适用于代码，任何需要追踪历史变更、支持多人协作的文本型项目都可以使用Git。对于大型二进制文件，建议使用Git LFS（Large File Storage）。
+            </div>
+        </div>
+
+        <div id="content-not-use-cases" class="content-section">
+            <h2 class="section-title">Git 不适用场景</h2>
+            <p class="description">了解哪些情况下不适合使用Git，避免误用。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">大型二进制文件</h4>
+                    <p class="mb-3">Git不擅长处理大型二进制文件，会导致仓库体积膨胀。</p>
+                    <div class="example-box">
+                        ❌ 高分辨率图片（RAW格式）<br>
+                        ❌ 视频文件（MP4、AVI等）<br>
+                        ❌ 音频文件（WAV、FLAC等）<br>
+                        ❌ 压缩包（ZIP、RAR、7z）<br>
+                        ❌ 安装包（EXE、DMG、APK）
+                    </div>
+                    <p class="mt-3 text-muted small">建议：使用Git LFS、外部存储服务（AWS S3、阿里云OSS）或专门的媒体管理系统。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">频繁变化的临时文件</h4>
+                    <p class="mb-3">临时文件、缓存文件等不需要版本控制的内容。</p>
+                    <div class="example-box">
+                        ❌ 编译缓存（node_modules、.next）<br>
+                        ❌ IDE配置（.idea、.vscode临时文件）<br>
+                        ❌ 操作系统文件（.DS_Store、Thumbs.db）<br>
+                        ❌ 日志文件（*.log）<br>
+                        ❌ 数据库文件（SQLite、临时备份）
+                    </div>
+                    <p class="mt-3 text-muted small">建议：使用.gitignore文件忽略这些文件。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">敏感与机密数据</h4>
+                    <p class="mb-3">绝不应该将敏感信息提交到Git仓库。</p>
+                    <div class="example-box">
+                        ❌ API密钥和访问令牌<br>
+                        ❌ 数据库密码<br>
+                        ❌ SSH私钥<br>
+                        ❌ SSL证书<br>
+                        ❌ 个人身份信息（PII）
+                    </div>
+                    <p class="mt-3 text-muted small">建议：使用环境变量、密钥管理系统（HashiCorp Vault）或配置管理工具。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">实时协作的富媒体编辑</h4>
+                    <p class="mb-3">需要多人同时在线编辑的富媒体文档。</p>
+                    <div class="example-box">
+                        ❌ 实时协作文档（Google Docs风格）<br>
+                        ❌ 复杂的Excel表格协作<br>
+                        ❌ 在线白板绘图<br>
+                        ❌ 视频剪辑项目<br>
+                        ❌ 音频混音工程
+                    </div>
+                    <p class="mt-3 text-muted small">建议：使用专门的协作工具（Google Docs、Notion、Figma、Miro等）。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">极高频率的自动更新</h4>
+                    <p class="mb-3">每分钟甚至每秒都在变化的动态数据。</p>
+                    <div class="example-box">
+                        ❌ 实时传感器数据<br>
+                        ❌ 日志流（每秒写入）<br>
+                        ❌ 交易记录<br>
+                        ❌ 用户行为追踪数据<br>
+                        ❌ 动态生成的报表
+                    </div>
+                    <p class="mt-3 text-muted small">建议：使用数据库、时间序列数据库或日志收集系统。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">受版权限制的付费内容</h4>
+                    <p class="mb-3">有版权限制或需要许可证的文件。</p>
+                    <div class="example-box">
+                        ❌ 付费字体文件<br>
+                        ❌ 商业图片库素材<br>
+                        ❌ 付费软件包<br>
+                        ❌ 音乐版权文件<br>
+                        ❌ 授权插件
+                    </div>
+                    <p class="mt-3 text-muted small">建议：使用外部存储服务，在代码中引用而非包含文件本身。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">非结构化的大数据集</h4>
+                    <p class="mb-3">海量的非结构化数据不适合Git管理。</p>
+                    <div class="example-box">
+                        ❌ 机器学习训练数据集（GB级别）<br>
+                        ❌ 数据库备份<br>
+                        ❌ 影像库<br>
+                        ❌ 备份归档<br>
+                        ❌ 历史日志归档
+                    </div>
+                    <p class="mt-3 text-muted small">建议：使用数据存储服务（HDFS、S3）、数据湖或专门的备份系统。</p>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <i class="bi bi-lightbulb"></i>
+                <strong>提示：</strong>Git是分布式版本控制系统，专注于文本文件的版本追踪。对于不适用Git的场景，选择专门的工具往往更高效。合理使用.gitignore可以避免将不需要的文件纳入版本控制。
             </div>
         </div>
 
@@ -1174,18 +1424,714 @@
                 </div>
             </div>
         </div>
-    </main>
 
-    <!-- 页脚 -->
-    <footer>
-        <div class="container text-center">
-            <p class="mb-2">
-                <i class="bi bi-heart-fill text-danger"></i> Git 学习网站 - 快速掌握Git版本控制
-            </p>
-            <p class="mb-0 text-secondary">Built with Bootstrap 5.3 | 纯静态网站 | 包含AI辅助和现代实践</p>
-            <p class="mb-0 text-secondary mt-2">Git版本: 2.50</p>
+        <!-- 日常使用内容 -->
+        <div id="content-daily-workflow" class="content-section">
+            <h2 class="section-title">日常工作流</h2>
+            <p class="description">程序员日常开发中最常用的Git操作流程。</p>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">标准开发流程</h4>
+                    <div class="example-box">
+                        # 1. 拉取最新代码<br>
+                        git pull origin main<br><br>
+                        # 2. 创建功能分支<br>
+                        git checkout -b feature/new-feature<br><br>
+                        # 3. 开发并查看状态<br>
+                        git status<br><br>
+                        # 4. 添加更改到暂存区<br>
+                        git add .<br><br>
+                        # 5. 提交代码<br>
+                        git commit -m "feat: 添加新功能"<br><br>
+                        # 6. 推送到远程<br>
+                        git push -u origin feature/new-feature<br><br>
+                        # 7. 创建Pull Request/Merge Request
+                    </div>
+                    <h4 class="mb-3 mt-4">提交前检查</h4>
+                    <div class="example-box">
+                        # 查看将要提交的更改<br>
+                        git diff --cached<br><br>
+                        # 查看未暂存的更改<br>
+                        git diff
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>保持main分支干净，所有开发都在功能分支上进行。
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
+
+        <div id="content-daily-fix-bug" class="content-section">
+            <h2 class="section-title">修复Bug流程</h2>
+            <p class="description">发现Bug后如何使用Git进行修复。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="example-box">
+                        # 1. 从main创建bug修复分支<br>
+                        git checkout main<br>
+                        git pull origin main<br>
+                        git checkout -b bugfix/login-error<br><br>
+                        # 2. 定位问题提交<br>
+                        git log --oneline --all<br>
+                        git bisect start<br>
+                        git bisect bad HEAD<br>
+                        git bisect good v1.0.0<br><br>
+                        # 3. 修复代码并提交<br>
+                        git add .<br>
+                        git commit -m "fix: 修复登录验证错误"<br><br>
+                        # 4. 推送并创建PR<br>
+                        git push -u origin bugfix/login-error
+                    </div>
+                    <h4 class="mb-3 mt-4">查看变更历史</h4>
+                    <div class="example-box">
+                        # 查看文件变更历史<br>
+                        git log --follow -p filename.js<br><br>
+                        # 查看谁在什么时候修改的<br>
+                        git blame filename.js
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>bugfix分支命名使用"bugfix/"前缀，方便团队识别。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-daily-hotfix" class="content-section">
+            <h2 class="section-title">紧急修复</h2>
+            <p class="description">生产环境紧急问题的快速处理流程。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="example-box">
+                        # 1. 基于生产标签创建hotfix分支<br>
+                        git checkout -b hotfix/critical-bug v1.0.0<br><br>
+                        # 2. 快速修复问题<br>
+                        git add .<br>
+                        git commit -m "hotfix: 修复生产环境严重错误"<br><br>
+                        # 3. 打补丁标签<br>
+                        git tag -a v1.0.1 -m "Hotfix patch"<br><br>
+                        # 4. 合并回main和develop<br>
+                        git checkout main<br>
+                        git merge --no-ff hotfix/critical-bug<br>
+                        git tag v1.0.1<br><br>
+                        # 5. 推送所有<br>
+                        git push origin main --tags
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>Hotfix应该尽可能小，专注于修复核心问题。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-daily-alias" class="content-section">
+            <h2 class="section-title">常用别名</h2>
+            <p class="description">配置常用命令别名，提高工作效率。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="example-box">
+                        # 设置别名<br>
+                        git config --global alias.st status<br>
+                        git config --global alias.co checkout<br>
+                        git config --global alias.br branch<br>
+                        git config --global alias.ci commit<br>
+                        git config --global alias.unstage 'reset HEAD --'<br>
+                        git config --global alias.last 'log -1 HEAD'<br>
+                        git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"<br><br>
+                        # 使用别名<br>
+                        git st<br>
+                        git co feature/login<br>
+                        git br -a<br>
+                        git ci -m "fix bug"<br>
+                        git lg
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>在 ~/.gitconfig 文件中管理全局别名配置。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-daily-ignore" class="content-section">
+            <h2 class="section-title">忽略文件</h2>
+            <p class="description">配置 .gitignore 忽略不需要版本控制的文件。</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="command-box">
+                        <span class="command-name">.gitignore 规则</span>
+                    </div>
+                    <div class="example-box">
+                        # .gitignore 示例<br><br>
+                        # 依赖目录<br>
+                        node_modules/<br>
+                        vendor/<br><br>
+                        # 编译输出<br>
+                        dist/<br>
+                        build/<br>
+                        *.min.js<br><br>
+                        # 环境配置<br>
+                        .env<br>
+                        .env.local<br><br>
+                        # IDE 配置<br>
+                        .vscode/<br>
+                        .idea/<br><br>
+                        # 日志文件<br>
+                        *.log<br>
+                        npm-debug.log*<br><br>
+                        # 操作系统文件<br>
+                        .DS_Store<br>
+                        Thumbs.db<br><br>
+                        # 忽略所有 .txt 文件<br>
+                        *.txt<br><br>
+                        # 但保留 important.txt<br>
+                        !important.txt
+                    </div>
+                    <h4 class="mb-3 mt-4">常用命令</h4>
+                    <div class="example-box">
+                        # 查看已被忽略的文件<br>
+                        git ls-files --others --ignored --exclude-standard<br><br>
+                        # 从版本控制中移除已跟踪文件（保留本地）<br>
+                        git rm --cached filename<br><br>
+                        # 移除目录下所有已跟踪文件<br>
+                        git rm -r --cached directory/
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>GitHub提供官方 .gitignore 模板，涵盖各种语言和框架。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内部原理内容 -->
+        <div id="content-internal-storage" class="content-section">
+            <h2 class="section-title">存储结构</h2>
+            <p class="description">深入了解Git的底层存储架构和目录结构。</p>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">.git 目录结构</h4>
+                    <div class="example-box">
+                        .git/<br>
+                        ├── HEAD                 # 当前分支引用<br>
+                        ├── config               # 仓库配置文件<br>
+                        ├── description          # 仓库描述<br>
+                        ├── hooks/               # Git钩子脚本<br>
+                        │   ├── pre-commit<br>
+                        │   ├── post-commit<br>
+                        │   └── ...<br>
+                        ├── info/                # 排除文件<br>
+                        │   └── exclude<br>
+                        ├── objects/             # Git对象存储<br>
+                        │   ├── info/            # 包文件信息<br>
+                        │   │   └── packs<br>
+                        │   └── pack/            # 压缩包文件<br>
+                        │       ├── pack-*.idx   # 索引文件<br>
+                        │       └── pack-*.pack  # 数据文件<br>
+                        └── refs/                # 引用存储<br>
+                            ├── heads/           # 本地分支<br>
+                            │   ├── main<br>
+                            │   └── develop<br>
+                            ├── tags/            # 标签<br>
+                            │   ├── v1.0.0<br>
+                            │   └── v1.1.0<br>
+                            └── remotes/         # 远程引用<br>
+                                └── origin/<br>
+                                    ├── main<br>
+                                    └── develop
+                    </div>
+                    <h4 class="mb-3 mt-4">核心目录详解</h4>
+                    <p><strong>objects/</strong> - 存储所有Git对象，使用前2位哈希作为目录名，剩余38位作为文件名</p>
+                    <p><strong>refs/</strong> - 存储分支、标签等引用，内容是commit哈希</p>
+                    <p><strong>HEAD</strong> - 指向当前分支的符号引用</p>
+                    <p><strong>index</strong> - 暂存区二进制文件（隐藏）</p>
+                    <p><strong>config</strong> - 仓库特定配置（用户名、邮箱、远程仓库等）</p>
+                    <p><strong>hooks/</strong> - 自定义脚本，在特定Git操作时自动执行</p>
+                    
+                    <h4 class="mb-3 mt-4">Git对象存储结构图</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.85rem;">
+                        <pre style="margin: 0; color: #333;">
+objects/
+├── ab/                    # 哈希前2位作为目录
+│   └── cdef1234...        # 剩余38位作为文件名
+├── de/
+│   └── f4567890...
+└── pack/                  # 打包存储（优化）
+    ├── abc123.idx         # 索引文件
+    └── abc123.pack        # 数据文件
+                        </pre>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">查看内部结构</h4>
+                    <div class="example-box">
+                        # 查看objects目录<br>
+                        ls -la .git/objects/<br><br>
+                        # 查看HEAD内容<br>
+                        cat .git/HEAD<br><br>
+                        # 查看分支引用<br>
+                        cat .git/refs/heads/main<br><br>
+                        # 查看所有对象<br>
+                        git rev-list --all --objects<br><br>
+                        # 查看对象大小<br>
+                        git count-objects -vH
+                    </div>
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>Git使用内容寻址存储，相同内容只存储一次，这使Git非常高效。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-internal-object" class="content-section">
+            <h2 class="section-title">对象模型</h2>
+            <p class="description">Git的四种核心对象类型及其作用。</p>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">四种Git对象</h4>
+                    <div class="example-box">
+                        # 1. Blob 对象 - 存储文件内容<br>
+                        # 文件内容被压缩并计算SHA-1哈希<br>
+                        # 相同内容只存储一次（去重）<br>
+                        # 不包含文件名、路径等信息<br><br>
+                        # 2. Tree 对象 - 类似目录<br>
+                        # 记录文件名、权限和blob/tree引用<br>
+                        # 递归形成文件系统树<br>
+                        # 一个tree可以包含blob和其他tree<br><br>
+                        # 3. Commit 对象 - 提交记录<br>
+                        # 包含：tree引用、父commit、作者、时间、消息<br>
+                        # 形成提交链（DAG - 有向无环图）<br><br>
+                        # 4. Tag 对象 - 标签<br>
+                        # 指向特定commit，包含签名和消息<br>
+                        # 用于版本标记，可以是轻量级或带注释
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">对象关系图</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                    Commit (HEAD)
+                    ┌─────────────────────────────────┐
+                    │ tree: abc123...                │
+                    │ parent: def456...               │
+                    │ author: 张三 &lt;zhang@example.com&gt; │
+                    │ date: 2024-01-15 10:30:00      │
+                    │ message: "添加新功能"           │
+                    └─────────────────────────────────┘
+                               │
+                               ▼
+                    Tree (abc123...)
+                    ┌─────────────────────────────────┐
+                    │ 100644 blob 789abc...  README.md│
+                    │ 100644 blob 456def...  main.js  │
+                    │ 040000 tree 123456...  src/     │
+                    └─────────────────────────────────┘
+                               │
+                    ┌──────────┼──────────┐
+                    ▼          ▼          ▼
+              Blob       Blob        Tree
+            (README)    (main.js)   (src/)
+                                      │
+                                      ▼
+                               Tree (123456...)
+                    ┌─────────────────────────────────┐
+                    │ 100644 blob 789012...  app.js   │
+                    └─────────────────────────────────┘
+                                      │
+                                      ▼
+                                  Blob (app.js)
+                        </pre>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">查看对象</h4>
+                    <div class="example-box">
+                        # 查看对象类型<br>
+                        git cat-file -t &lt;hash&gt;<br><br>
+                        # 查看对象内容<br>
+                        git cat-file -p &lt;hash&gt;<br><br>
+                        # 查看对象大小<br>
+                        git cat-file -s &lt;hash&gt;<br><br>
+                        # 查看所有对象<br>
+                        git rev-list --all --objects<br><br>
+                        # 查看对象的原始数据<br>
+                        git cat-file &lt;hash&gt;
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">哈希计算原理</h4>
+                    <div class="example-box">
+                        # 对象哈希 = SHA1("type size\0content")<br><br>
+                        # 示例：内容为"hello"的blob对象<br>
+                        # Header: "blob 5\0hello"<br>
+                        # SHA1("blob 5\0hello") = a0423896b8...<br><br>
+                        # 这保证：相同内容 = 相同哈希<br>
+                        # 不同类型 = 不同哈希<br>
+                        # 即使内容相同，类型不同，哈希也不同
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">对象不可变性</h4>
+                    <p>Git对象一旦创建就不可修改。修改内容会创建新的对象，新的哈希。这就是为什么Git操作（如修改提交）实际上是创建新对象。</p>
+                    
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>SHA-1哈希使Git能够高效去重和验证数据完整性。每个对象都是唯一的，通过哈希引用。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-internal-index" class="content-section">
+            <h2 class="section-title">索引机制</h2>
+            <p class="description">理解暂存区（index）的工作原理。</p>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">什么是索引</h4>
+                    <p>索引（Index）是一个二进制文件，位于 <code>.git/index</code>，记录了暂存区的文件信息。它是工作区和提交之间的桥梁。</p>
+                    
+                    <h4 class="mb-3 mt-4">索引结构图</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                    ┌─────────────────────────────────────┐
+                    │         工作区 (Working Dir)        │
+                    │  ┌──────────┐  ┌──────────┐        │
+                    │  │file1.txt │  │file2.txt │        │
+                    │  │ (已修改) │  │ (未修改) │        │
+                    │  └──────────┘  └──────────┘        │
+                    └──────────────┬──────────────────────┘
+                                   │ git add
+                                   ▼
+                    ┌─────────────────────────────────────┐
+                    │            索引 (.git/index)         │
+                    │  ┌──────────────────────────────┐  │
+                    │  │ file1.txt → blob: abc123...  │  │
+                    │  │ file2.txt → blob: def456...  │  │
+                    │  │ (按路径排序，支持快速查找)    │  │
+                    │  └──────────────────────────────┘  │
+                    └──────────────┬──────────────────────┘
+                                   │ git commit
+                                   ▼
+                    ┌─────────────────────────────────────┐
+                    │           提交 (Commit)              │
+                    │  ┌──────────────────────────────┐  │
+                    │  │ tree: xyz789...              │  │
+                    │  │ parent: ...                  │  │
+                    │  │ message: "..."               │  │
+                    │  └──────────────────────────────┘  │
+                    └─────────────────────────────────────┘
+                        </pre>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">索引条目结构</h4>
+                    <div class="example-box">
+                        # 每个条目包含：<br>
+                        # - ctime/mtime: 文件修改时间<br>
+                        # - dev/ino: 文件设备/索引节点<br>
+                        # - mode: 文件权限 (100644/100755/120000)<br>
+                        # - uid/gid: 用户/组ID<br>
+                        # - size: 文件大小<br>
+                        # - object_id: blob对象哈希<br>
+                        # - flags: 状态标志<br>
+                        # - path: 文件路径<br><br>
+                        # 索引按路径排序，支持二分查找
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">查看索引</h4>
+                    <div class="example-box">
+                        # 查看索引内容（简洁）<br>
+                        git ls-files -s<br><br>
+                        # 查看索引详细信息<br>
+                        git ls-files --stage<br><br>
+                        # 查看暂存区文件状态<br>
+                        git diff --cached<br><br>
+                        # 查看索引统计信息<br>
+                        git ls-files --debug<br><br>
+                        # 查看索引的二进制内容<br>
+                        git ls-files --debug --format='%(objectname) %(path)'
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">git add 原理</h4>
+                    <div class="example-box">
+                        # git add 执行流程：<br><br>
+                        # 1. 读取工作区文件内容<br>
+                        # 2. 计算内容的SHA-1哈希<br>
+                        # 3. 在objects目录中查找该哈希<br>
+                        # 4. 如果对象不存在，创建blob对象并存储<br>
+                        # 5. 更新索引，添加/更新文件条目<br><br>
+                        # 这就是为什么"添加"很快：<br>
+                        # - 内容未变则复用已有对象<br>
+                        # - 只更新索引，不立即提交<br>
+                        # - 增量更新，不复制整个文件
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">索引状态</h4>
+                    <div class="example-box">
+                        # 文件的三种状态：<br><br>
+                        # 1. 未跟踪 (untracked)<br>
+                        #    - 新文件，从未被add<br><br>
+                        # 2. 已暂存 (staged)<br>
+                        #    - 在索引中，等待提交<br><br>
+                        # 3. 已修改 (modified)<br>
+                        #    - 工作区与索引不一致<br><br>
+                        # 查看状态：<br>
+                        git status
+                    </div>
+                    
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>索引是工作区和提交之间的桥梁，决定了哪些文件会被提交。git add只是更新索引，不创建提交。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-internal-ref" class="content-section">
+            <h2 class="section-title">引用机制</h2>
+            <p class="description">理解Git如何通过引用定位对象和分支。</p>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">引用类型</h4>
+                    <div class="example-box">
+                        # 1. HEAD - 当前分支引用<br>
+                        # .git/HEAD 内容: ref: refs/heads/main<br><br>
+                        # 2. 分支引用 - refs/heads/<br>
+                        # .git/refs/heads/main 内容: abc123... (commit哈希)<br><br>
+                        # 3. 远程引用 - refs/remotes/<br>
+                        # .git/refs/remotes/origin/main 内容: def456...<br><br>
+                        # 4. 标签引用 - refs/tags/<br>
+                        # .git/refs/tags/v1.0 内容: 789abc...<br><br>
+                        # 5. 特殊引用 - refs/stash, refs/original/*
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">引用关系图</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                    ┌─────────────────────────────────────┐
+                    │              HEAD                  │
+                    │         ref: refs/heads/main       │
+                    └─────────────────┬───────────────────┘
+                                      │
+                                      ▼
+                    ┌─────────────────────────────────────┐
+                    │      refs/heads/main (分支)          │
+                    │            abc123def...             │
+                    └─────────────────┬───────────────────┘
+                                      │
+                                      ▼
+                    ┌─────────────────────────────────────┐
+                    │            Commit                   │
+                    │  tree: xyz789...                    │
+                    │  parent: (上一提交)                 │
+                    │  message: "..."                     │
+                    └─────────────────────────────────────┘
+                                      │
+                                      ▼
+                    ┌─────────────────────────────────────┐
+                    │         refs/tags/v1.0 (标签)        │
+                    │            abc123def...             │
+                    └─────────────────────────────────────┘
+
+                    ┌─────────────────────────────────────┐
+                    │    refs/remotes/origin/main (远程)  │
+                    │            def456ghi...             │
+                    └─────────────────────────────────────┘
+                        </pre>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">引用解析</h4>
+                    <div class="example-box">
+                        # 查看所有引用<br>
+                        git show-ref<br><br>
+                        # 查看特定引用<br>
+                        git show-ref heads/main<br><br>
+                        # 查看HEAD指向<br>
+                        git symbolic-ref HEAD<br><br>
+                        # 查看引用日志<br>
+                        git reflog show main<br><br>
+                        # 解析引用到commit<br>
+                        git rev-parse main
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">detached HEAD 状态</h4>
+                    <p>当HEAD直接指向commit而非分支引用时，称为detached HEAD状态。</p>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem;">
+                        <pre style="margin: 0; color: #333;">
+                    正常状态:
+                    HEAD → refs/heads/main → abc123... (commit)
+
+                    Detached HEAD:
+                    HEAD → abc123... (commit 直接指向)
+                        </pre>
+                    </div>
+                    <div class="example-box">
+                        # 进入detached HEAD状态<br>
+                        git checkout abc123def<br><br>
+                        # 查看当前HEAD状态<br>
+                        cat .git/HEAD<br><br>
+                        # 从detached状态恢复<br>
+                        git checkout main<br><br>
+                        # 在detached状态下创建新分支<br>
+                        git checkout -b new-branch
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">轻量级标签 vs 带注释标签</h4>
+                    <div class="example-box">
+                        # 轻量级标签（直接指向commit）<br>
+                        git tag v1.0<br>
+                        # .git/refs/tags/v1.0 内容: abc123...<br><br>
+                        # 带注释标签（指向tag对象）<br>
+                        git tag -a v1.0 -m "版本1.0"<br>
+                        # .git/refs/tags/v1.0 内容: def456... (tag对象)<br><br>
+                        # 查看标签类型<br>
+                        git cat-file -t refs/tags/v1.0
+                    </div>
+                    
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>引用是可变的文件，而对象是不可变的哈希，这种设计使Git高效且安全。分支、标签本质上都是指向commit的引用。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-internal-commands" class="content-section">
+            <h2 class="section-title">命令原理</h2>
+            <p class="description">深入理解常用Git命令的底层实现。</p>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">git commit 原理</h4>
+                    <div class="example-box">
+                        # 执行步骤：<br>
+                        # 1. 基于索引创建tree对象<br>
+                        # 2. 读取当前HEAD获取父commit<br>
+                        # 3. 创建commit对象（包含tree、父commit、作者、消息）<br>
+                        # 4. 计算commit对象的SHA-1哈希<br>
+                        # 5. 更新当前分支引用指向新commit<br><br>
+                        # 验证commit内容：<br>
+                        git cat-file -p HEAD<br><br>
+                        # 查看commit的tree：<br>
+                        git cat-file -p HEAD | grep tree | awk '{print $2}' | xargs git cat-file -p
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">git merge 原理</h4>
+                    <div class="example-box">
+                        # 执行步骤：<br>
+                        # 1. 找到两个分支的共同祖先（LCA）<br>
+                        # 2. 比较分支与祖先的差异（三方差异）<br>
+                        # 3. 使用祖先作为基准进行三方合并<br>
+                        # 4. 如果无冲突，创建merge commit（两个父commit）<br><br>
+                        # 三方合并算法：<br>
+                        # - 两个分支修改了不同区域 → 自动合并<br>
+                        # - 只有一个分支修改 → 采用该修改<br>
+                        # - 两个分支修改相同区域 → 产生冲突
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">三方合并示意图</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        A (共同祖先)
+                       / \
+                      /   \
+                     B     C  (两个分支)
+                      \   /
+                       \ /
+                        D  (merge commit)
+
+                        三方合并：
+                        - 以A为基准
+                        - 比较A→B的变更
+                        - 比较A→C的变更
+                        - 合并到D
+                        </pre>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">git checkout 原理</h4>
+                    <div class="example-box">
+                        # 执行步骤：<br>
+                        # 1. 更新HEAD引用指向目标分支<br>
+                        # 2. 读取目标commit的tree对象<br>
+                        # 3. 递归遍历tree，用blob更新工作区文件<br>
+                        # 4. 更新索引匹配新的tree<br>
+                        # 5. 删除工作区中不存在于新tree的文件<br><br>
+                        # 这就是为什么切换分支会改变文件！<br>
+                        # checkout本质是：更新HEAD + 恢复工作区 + 更新索引
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">git rebase 原理</h4>
+                    <div class="example-box">
+                        # 执行步骤：<br>
+                        # 1. 找到当前分支和目标分支的共同祖先<br>
+                        # 2. 提取当前分支从祖先开始的所有commit<br>
+                        # 3. 暂存这些commit的变更<br>
+                        # 4. 将当前分支重置到目标分支<br>
+                        # 5. 在目标分支上依次重新应用每个commit<br>
+                        # 6. 为每个commit创建新的commit（新哈希）<br><br>
+                        # rebase vs merge:<br>
+                        # merge: 保留完整历史，有分支图<br>
+                        # rebase: 线性历史，重写提交哈希
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">rebase 示意图</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        Rebase 前:           Rebase 后:
+                             A                       A
+                            / \                        |
+                           B   C                       C
+                          / \                          |
+                         D   E                         D'
+                        /                             /|
+                       F                             F' E'
+                    
+                        (B和C是共同祖先后的分支)
+                        (D', E', F'是重新应用的commit)
+                        </pre>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">git diff 原理</h4>
+                    <div class="example-box">
+                        # git diff（工作区 vs 暂存区）<br>
+                        # 比较工作区文件和索引中的blob对象<br><br>
+                        # git diff --cached（暂存区 vs HEAD）<br>
+                        # 比较索引和HEAD的tree对象<br><br>
+                        # git diff branch1 branch2<br>
+                        # 比较两个commit的tree对象<br><br>
+                        # 使用的是差异算法（如Myers算法）<br>
+                        # 找出最小的编辑序列将A转换为B
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">git pull 原理</h4>
+                    <div class="example-box">
+                        # git pull = git fetch + git merge<br><br>
+                        # 执行步骤：<br>
+                        # 1. git fetch: 从远程拉取更新<br>
+                        #    - 更新 refs/remotes/origin/*<br>
+                        #    - 不修改工作区<br>
+                        # 2. git merge: 合并远程更新<br>
+                        #    - 默认使用快进合并<br>
+                        #    - 或创建merge commit<br><br>
+                        # git pull --rebase = git fetch + git rebase
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">git push 原理</h4>
+                    <div class="example-box">
+                        # 执行步骤：<br>
+                        # 1. 打包本地objects<br>
+                        # 2. 发送到远程仓库<br>
+                        # 3. 更新远程引用（refs/heads/*）<br><br>
+                        # 快进推送：<br>
+                        # 本地提交是远程提交的后继<br><br>
+                        # 强制推送：<br>
+                        # 覆盖远程历史（谨慎使用）
+                    </div>
+                    
+                    <div class="tip-box">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>提示：</strong>理解命令原理有助于更好地使用Git和解决复杂问题。所有Git操作本质都是创建新对象和更新引用。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
