@@ -435,6 +435,9 @@
                     <li><a class="sidebar-subnav-link" data-section="internal-index">索引机制</a></li>
                     <li><a class="sidebar-subnav-link" data-section="internal-ref">引用机制</a></li>
                     <li><a class="sidebar-subnav-link" data-section="internal-commands">命令原理</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="internal-diff-algo">比较算法</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="internal-merge-algo">分支合并原理</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="internal-remote-branch">本地与远程分支关系</a></li>
                 </ul>
             </li>
 
@@ -2129,6 +2132,847 @@ objects/
                         <strong>提示：</strong>理解命令原理有助于更好地使用Git和解决复杂问题。所有Git操作本质都是创建新对象和更新引用。
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="content-internal-diff-algo" class="content-section">
+            <h2 class="section-title">Git 比较算法</h2>
+            <p class="description">深入了解Git如何计算文件和目录之间的差异。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Myers 差异算法</h4>
+                    <p class="mb-3">Git使用Myers差异算法来计算两个文本之间的最小编辑序列，这是最经典的diff算法之一。</p>
+                    
+                    <h5 class="mb-2 mt-4">算法核心思想</h5>
+                    <p class="mb-3">通过构建一个编辑图（Edit Graph），寻找从起点到终点的最短路径。每条路径代表一种编辑操作（插入、删除、匹配）。</p>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+编辑图示例：
+文件A: ABCAB
+文件B: ACBBC
+
+        C   B   B   C
+      ┌───┬───┬───┬───┐
+    A │ × │ \ │ × │ \ │  (×=删除, \=对角线=匹配)
+      ├───┼───┼───┼───┤
+    B │ \ │ × │ \ │ × │
+      ├───┼───┼───┼───┤
+    C │ × │ \ │ × │ \ │
+      ├───┼───┼───┼───┤
+    A │ \ │ × │ \ │ × │
+      ├───┼───┼───┼───┤
+    B │ × │ \ │ × │ \ │
+      └───┴───┴───┴───┘
+
+最短路径 = 最少编辑操作
+                        </pre>
+                    </div>
+                    
+                    <h5 class="mb-2 mt-4">时间复杂度</h5>
+                    <div class="example-box">
+                        # 最坏情况：O(ND)<br>
+                        # N = 文件A的行数<br>
+                        # D = 最小编辑距离<br>
+                        <br>
+                        # 实际应用中：通常接近O(N+M)<br>
+                        # M = 文件B的行数<br>
+                        <br>
+                        # Git优化：使用二分查找和启发式加速
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Patience Diff 算法</h4>
+                    <p class="mb-3">Git 2.11+引入的另一种diff算法，在某些场景下比Myers算法更符合人类直觉。</p>
+                    
+                    <h5 class="mb-2 mt-4">算法原理</h5>
+                    <p class="mb-3">寻找文件中"独特且有序"的共同行（unique common elements），作为锚点进行匹配。</p>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+文件A:           文件B:
+1. import A       1. import A        ← 锚点（唯一且顺序一致）
+2. function foo   2. function bar
+3. const x = 1    3. const x = 1     ← 锚点
+4. function bar   4. function foo
+5. const y = 2    5. const y = 2     ← 锚点
+6. export B       6. export B        ← 锚点
+
+Patience Diff识别锚点后，在锚点之间使用Myers算法
+                        </pre>
+                    </div>
+                    
+                    <h5 class="mb-2 mt-4">适用场景</h5>
+                    <div class="example-box">
+                        ✅ 函数或代码块重新排序<br>
+                        ✅ 大量相似的重复代码<br>
+                        ✅ 结构性重构<br>
+                        <br>
+                        ❌ 纯文本替换<br>
+                        ❌ 微小的局部修改
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Histogram Diff 算法</h4>
+                    <p class="mb-3">Git默认的diff算法，结合了Myers和Patience的优点，使用直方图统计来优化匹配。</p>
+                    
+                    <h5 class="mb-2 mt-4">算法特点</h5>
+                    <div class="example-box">
+                        # 1. 统计每行出现的次数（直方图）<br>
+                        # 2. 优先匹配出现次数少的行（更可能是锚点）<br>
+                        # 3. 在锚点之间使用Myers算法<br>
+                        # 4. 对锚点附近的行进行局部优化<br><br>
+                        # 优势：<br>
+                        # - 比纯Myers更符合人类直觉<br>
+                        # - 比Patience diff适用范围更广<br>
+                        # - 性能优化更好
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">diff 算法对比</h4>
+                    <table class="table table-bordered table-sm mt-3">
+                        <thead>
+                            <tr class="table-light">
+                                <th>算法</th>
+                                <th>速度</th>
+                                <th>准确性</th>
+                                <th>可读性</th>
+                                <th>使用场景</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Myers</td>
+                                <td>★★★☆☆</td>
+                                <td>★★★★☆</td>
+                                <td>★★★☆☆</td>
+                                <td>通用，Git默认</td>
+                            </tr>
+                            <tr>
+                                <td>Patience</td>
+                                <td>★★☆☆☆</td>
+                                <td>★★★★★</td>
+                                <td>★★★★★</td>
+                                <td>代码重排</td>
+                            </tr>
+                            <tr>
+                                <td>Histogram</td>
+                                <td>★★★★☆</td>
+                                <td>★★★★☆</td>
+                                <td>★★★★☆</td>
+                                <td>现代Git默认</td>
+                            </tr>
+                            <tr>
+                                <td>Minimal</td>
+                                <td>★☆☆☆☆</td>
+                                <td>★★★★★</td>
+                                <td>★★★☆☆</td>
+                                <td>精确分析</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">切换 diff 算法</h4>
+                    <div class="example-box">
+                        # 使用Patience diff<br>
+                        git diff --patience<br><br>
+                        # 使用Histogram diff（默认）<br>
+                        git diff --histogram<br><br>
+                        # 使用Myers diff<br>
+                        git diff --minimal<br><br>
+                        # 全局配置默认算法<br>
+                        git config --global diff.algorithm histogram<br><br>
+                        # 仓库级别配置<br>
+                        git config diff.algorithm patience
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">diff 优化技巧</h4>
+                    <div class="example-box">
+                        # 忽略空白字符差异<br>
+                        git diff --ignore-space-at-eol<br>
+                        git diff --ignore-space-change<br>
+                        git diff --ignore-all-space<br><br>
+                        # 单词级别的diff<br>
+                        git diff --word-diff<br>
+                        git diff --word-diff=color<br><br>
+                        # 限制上下文行数<br>
+                        git diff -U3  # 只显示3行上下文<br><br>
+                        # 忽略特定目录的diff<br>
+                        git diff -- . ':!node_modules'<br><br>
+                        # 使用外部diff工具<br>
+                        git difftool --tool=vimdiff
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <i class="bi bi-lightbulb"></i>
+                <strong>提示：</strong>Histogram diff是Git 2.9.1+的默认算法，它在大多数情况下提供了最佳的平衡。对于特殊的diff需求，可以临时切换算法或使用外部工具。
+            </div>
+        </div>
+
+        <div id="content-internal-merge-algo" class="content-section">
+            <h2 class="section-title">分支合并原理</h2>
+            <p class="description">深入理解Git如何合并不同分支的更改。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">合并基础概念</h4>
+                    <p class="mb-3">Git合并的核心是找到共同祖先（Common Ancestor），然后进行三方合并（3-way merge）。</p>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        ┌─────────────────────────────────────┐
+                        │         合并前状态                   │
+                        └─────────────────────────────────────┘
+                                     A (共同祖先)
+                                    / \
+                          分支1:   B   C   分支2
+                                   |   |
+                                   D   E
+                        
+                        合并 main ← feature:
+                        找到共同祖先: A
+                        合并 B→D 和 C→E 的变更
+                        结果: 新的merge commit
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">三方合并算法</h4>
+                    <p class="mb-3">Git使用递归三方合并（Recursive 3-way merge）算法，这是最常用的合并策略。</p>
+                    
+                    <h5 class="mb-2 mt-4">合并步骤</h5>
+                    <div class="example-box">
+                        # 1. 找到两个分支的共同祖先（LCA）<br>
+                        # 2. 比较 祖先→分支1 的变更（diff1）<br>
+                        # 3. 比较 祖先→分支2 的变更（diff2）<br>
+                        # 4. 逐文件合并：<br>
+                        #    - 如果只在diff1中修改 → 采用diff1<br>
+                        #    - 如果只在diff2中修改 → 采用diff2<br>
+                        #    - 如果都修改了同一行 → 产生冲突<br>
+                        #    - 如果都修改了不同行 → 自动合并<br>
+                        # 5. 创建merge commit（两个父commit）
+                    </div>
+                    
+                    <h5 class="mb-2 mt-4">合并示例</h5>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem;">
+                        <pre style="margin: 0; color: #333;">
+共同祖先 (A):
+const x = 1;
+const y = 2;
+const z = 3;
+
+分支1 (B):          分支2 (C):         合并结果:
+const x = 10;       const x = 1;        const x = 10;   ← 冲突！
+const y = 20;       const y = 2;        const y = 20;   ← 冲突！
+const z = 3;        const z = 30;       const z = 30;   ← 自动合并
+
+冲突标记：
+<<<<<<< HEAD
+const x = 10;
+const y = 20;
+=======
+const x = 1;
+const y = 2;
+>>>>>>> feature
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">递归合并策略</h4>
+                    <p class="mb-3">当存在多个共同祖先时，Git使用递归合并策略。</p>
+                    
+                    <h5 class="mb-2 mt-4">递归合并原理</h5>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        多个共同祖先的情况:
+                             A (共同祖先1)
+                            / \
+                           B   C
+                          / \ / \
+                         D   E   F (两个共同祖先: D, F)
+                          \ /   /
+                           G   H
+                            \ /
+                             I (合并点)
+
+                        递归合并步骤:
+                        1. 找到所有共同祖先: [D, F]
+                        2. 合并 D 和 F (虚拟祖先)
+                        3. 使用虚拟祖先进行三方合并
+                        
+                        优势:
+                        - 处理复杂的交叉合并
+                        - 减少冲突
+                        - 更智能的合并决策
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">合并策略类型</h4>
+                    <table class="table table-bordered table-sm mt-3">
+                        <thead>
+                            <tr class="table-light">
+                                <th>策略</th>
+                                <th>命令</th>
+                                <th>描述</th>
+                                <th>适用场景</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>recursive</td>
+                                <td><code>git merge</code></td>
+                                <td>递归三方合并（默认）</td>
+                                <td>大多数场景</td>
+                            </tr>
+                            <tr>
+                                <td>resolve</td>
+                                <td><code>-s resolve</code></td>
+                                <td>简单的三方合并</td>
+                                <td>快速合并，冲突少</td>
+                            </tr>
+                            <tr>
+                                <td>octopus</td>
+                                <td>自动选择</td>
+                                <td>合并多个分支</td>
+                                <td>合并3+分支</td>
+                            </tr>
+                            <tr>
+                                <td>ours</td>
+                                <td><code>-s ours</code></td>
+                                <td>保留当前分支</td>
+                                <td>丢弃其他分支</td>
+                            </tr>
+                            <tr>
+                                <td>subtree</td>
+                                <td><code>-s subtree</code></td>
+                                <td>子树合并</td>
+                                <td>子模块替代</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">冲突解决原理</h4>
+                    <p class="mb-3">当两个分支修改了同一行内容时，Git无法自动决定采用哪个版本，产生冲突。</p>
+                    
+                    <h5 class="mb-2 mt-4">冲突标记格式</h5>
+                    <div class="example-box">
+                        &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (当前分支的修改)<br>
+                        当前分支的内容<br>
+                        ======= (分隔符)<br>
+                        合并分支的内容<br>
+                        &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature (合并分支的修改)<br><br>
+                        # 解决冲突后运行:<br>
+                        git add <file><br>
+                        git commit
+                    </div>
+                    
+                    <h5 class="mb-2 mt-4">冲突类型</h5>
+                    <div class="example-box">
+                        # 1. 内容冲突<br>
+                        # - 两个分支修改了同一行<br>
+                        # - 相邻的修改导致无法自动合并<br><br>
+                        # 2. 树冲突<br>
+                        # - 一个分支重命名文件，另一个修改<br>
+                        # - 一个分支删除文件，另一个修改<br><br>
+                        # 3. 二进制冲突<br>
+                        # - 二进制文件无法diff<br>
+                        # - 需要手动选择版本
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">合并冲突检测优化</h4>
+                    <div class="example-box">
+                        # 设置冲突检测粒度<br>
+                        git config --global merge.conflictstyle diff3<br><br>
+                        # diff3 风格包含共同祖先内容<br>
+                        &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<br>
+                        当前版本<br>
+                        ||||||| merged common ancestors<br>
+                        共同祖先版本<br>
+                        =======<br>
+                        合并版本<br>
+                        &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature<br><br>
+                        # 使用外部合并工具<br>
+                        git config --global merge.tool vscode<br>
+                        git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">快进合并 (Fast-forward)</h4>
+                    <p class="mb-3">当目标分支是当前分支的直接后继时，可以使用快进合并。</p>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        快进合并前:         快进合并后:
+                        main:   A ← B      main:   A ← B ← C
+                                    ↑
+                                feature:
+                                A ← B ← C
+                        
+                        条件: feature 是 main 的直接后继
+                        结果: 简单地移动指针，无额外commit
+                        
+                        禁用快进:
+                        git merge --no-ff feature
+                        
+                        保留完整历史:
+                         A ← B ← C ← D (merge commit)
+                             \_____/
+                        </pre>
+                    </div>
+                    
+                    <div class="example-box">
+                        # 允许快进合并（默认）<br>
+                        git merge feature<br><br>
+                        # 禁用快进合并<br>
+                        git merge --no-ff feature<br><br>
+                        # 仅快进合并<br>
+                        git merge --ff-only feature
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Rebase 合并 vs Merge 合并</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        Merge 合并:
+                            A---B---C---D (main)
+                                 \       \
+                                  E---F---G (merge)
+                        
+                        优点: 保留完整历史
+                        缺点: 历史图复杂
+                        
+                        Rebase 合并:
+                            A---B---C---D (main)
+                                    \
+                                     E'---F' (rebase后)
+                        
+                        优点: 线性历史，简洁
+                        缺点: 重写历史，改变commit哈希
+                        </pre>
+                    </div>
+                    
+                    <div class="example-box">
+                        # Merge: 保留分支历史<br>
+                        git merge feature<br><br>
+                        # Rebase: 线性化历史<br>
+                        git rebase main<br>
+                        git merge feature
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">合并性能优化</h4>
+                    <div class="example-box">
+                        # 限制合并历史搜索范围<br>
+                        git merge --strategy-option patience<br><br>
+                        # 跳过冲突文件的自动合并<br>
+                        git merge --strategy-option theirs<br><br>
+                        # 使用稀疏合并（大仓库）<br>
+                        git sparse-checkout init<br>
+                        git sparse-checkout set src<br><br>
+                        # 并行合并（Git 2.27+）<br>
+                        git -c merge.parallelism=8 merge feature
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <i class="bi bi-lightbulb"></i>
+                <strong>提示：</strong>理解合并原理有助于更好地处理冲突。大多数情况下，使用默认的recursive策略即可。对于特殊场景，可以选择其他策略或使用外部工具辅助。
+            </div>
+        </div>
+
+        <div id="content-internal-remote-branch" class="content-section">
+            <h2 class="section-title">本地与远程分支关系</h2>
+            <p class="description">深入理解本地分支和远程分支的映射关系和同步机制。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">远程分支概念</h4>
+                    <p class="mb-3">远程分支（remote branch）是远程仓库状态的本地引用，存储在<code>refs/remotes/</code>目录下。</p>
+                    
+                    <h5 class="mb-2 mt-4">远程分支特点</h5>
+                    <div class="example-box">
+                        # 1. 只读引用<br>
+                        # - 不能直接修改<br>
+                        # - 通过fetch/push更新<br><br>
+                        # 2. 缓存远程状态<br>
+                        # - 反映上次fetch时的远程状态<br>
+                        # - 不是实时同步的<br><br>
+                        # 3. 独立于本地分支<br>
+                        # - origin/main ≠ main<br>
+                        # - 它们是独立的commit引用
+                    </div>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+远程分支存储结构:
+.git/refs/remotes/
+└── origin/
+    ├── main          (远程main分支)
+    ├── develop       (远程develop分支)
+    ├── feature/login (远程feature/login分支)
+    └── HEAD          (默认分支引用)
+
+查看远程分支:
+git branch -r
+git show-ref refs/remotes/origin/main
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">本地分支与远程分支的映射</h4>
+                    <p class="mb-3">本地分支和远程分支通过"上游分支"（upstream）概念建立关联。</p>
+                    
+                    <h5 class="mb-2 mt-4">上游分支设置</h5>
+                    <div class="example-box">
+                        # 设置上游分支（首次push）<br>
+                        git push -u origin main<br>
+                        # 等同于：<br>
+                        git push origin main<br>
+                        git branch --set-upstream-to=origin/main main<br><br>
+                        # 查看上游分支<br>
+                        git branch -vv<br><br>
+                        # 修改上游分支<br>
+                        git branch --set-upstream-to=origin/develop main
+                    </div>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+本地分支配置（.git/config）:
+[branch "main"]
+    remote = origin
+    merge = refs/heads/main
+
+这表示:
+- 本地main分支跟踪origin远程仓库
+- 合并目标是origin/main分支
+
+查看配置:
+git config branch.main.remote
+git config branch.main.merge
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">分支关系示意图</h4>
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        远程仓库 (GitHub):
+                            main: A ← B ← C
+
+                        本地仓库:
+                            本地main分支
+                                ↓ (上游)
+                            origin/main (远程引用)
+                                ↓ (fetch后)
+                            main: A ← B ← C
+                            
+                        工作流程:
+                        
+                        1. 初始状态 (克隆后):
+                           main (本地) = origin/main = 远程main
+                        
+                        2. 本地提交后:
+                           远程main:  A ← B ← C
+                           origin/main: A ← B ← C
+                           main (本地): A ← B ← C ← D ← E
+                           
+                        3. push后:
+                           远程main:  A ← B ← C ← D ← E
+                           origin/main: A ← B ← C ← D ← E
+                           main (本地): A ← B ← C ← D ← E
+                           
+                        4. 远程有新提交后:
+                           远程main:  A ← B ← C ← D ← E ← F
+                           origin/main: A ← B ← C ← D ← E (未fetch)
+                           main (本地): A ← B ← C ← D ← E
+                           
+                        5. fetch后:
+                           远程main:  A ← B ← C ← D ← E ← F
+                           origin/main: A ← B ← C ← D ← E ← F
+                           main (本地): A ← B ← C ← D ← E
+                           
+                        6. merge后:
+                           远程main:  A ← B ← C ← D ← E ← F
+                           origin/main: A ← B ← C ← D ← E ← F
+                           main (本地): A ← B ← C ← D ← E ← F
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">fetch 更新机制</h4>
+                    <p class="mb-3"><code>git fetch</code>从远程仓库获取最新数据，更新远程分支引用。</p>
+                    
+                    <h5 class="mb-2 mt-4">fetch 执行过程</h5>
+                    <div class="example-box">
+                        # 1. 连接到远程仓库<br>
+                        # 2. 获取远程的引用列表<br>
+                        # 3. 下载缺失的对象（commits, trees, blobs）<br>
+                        # 4. 更新 refs/remotes/* 引用<br>
+                        # 5. 不修改工作区和本地分支<br><br>
+                        # 注意：<br>
+                        # - 不自动合并到本地分支<br>
+                        # - 只更新远程引用<br>
+                        # - 可以安全地随时执行
+                    </div>
+                    
+                    <h5 class="mb-2 mt-4">fetch 命令示例</h5>
+                    <div class="example-box">
+                        # 获取所有远程更新<br>
+                        git fetch<br><br>
+                        # 获取特定远程仓库<br>
+                        git fetch origin<br><br>
+                        # 获取特定分支<br>
+                        git fetch origin main<br><br>
+                        # 获取所有远程仓库<br>
+                        git fetch --all<br><br>
+                        # 获取并修剪已删除的远程分支<br>
+                        git fetch --prune
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">push 同步机制</h4>
+                    <p class="mb-3"><code>git push</code>将本地提交推送到远程仓库，更新远程分支。</p>
+                    
+                    <h5 class="mb-2 mt-4">push 执行过程</h5>
+                    <div class="example-box">
+                        # 1. 打包本地objects（增量）<br>
+                        # 2. 发送到远程仓库<br>
+                        # 3. 远程验证（权限、快进检查）<br>
+                        # 4. 更新远程引用<br>
+                        # 5. 触发远程hooks（如果配置）<br><br>
+                        # 快进检查：<br>
+                        # - 本地分支必须是远程分支的后继<br>
+                        # - 否则需要强制推送或先pull
+                    </div>
+                    
+                    <h5 class="mb-2 mt-4">push 命令示例</h5>
+                    <div class="example-box">
+                        # 推送当前分支到上游<br>
+                        git push<br><br>
+                        # 推送指定分支<br>
+                        git push origin main<br><br>
+                        # 推送并设置上游<br>
+                        git push -u origin feature<br><br>
+                        # 推送所有分支<br>
+                        git push --all<br><br>
+                        # 推送标签<br>
+                        git push --tags<br><br>
+                        # 强制推送（谨慎使用）<br>
+                        git push --force<br>
+                        git push --force-with-lease
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">pull 合并机制</h4>
+                    <p class="mb-3"><code>git pull</code>是<code>git fetch</code>和<code>git merge</code>的组合。</p>
+                    
+                    <h5 class="mb-2 mt-4">pull 执行过程</h5>
+                    <div class="example-box">
+                        # git pull = git fetch + git merge<br><br>
+                        # 1. git fetch origin<br>
+                        #    - 更新 refs/remotes/origin/*<br>
+                        # 2. git merge origin/main<br>
+                        #    - 合并远程更新到当前分支<br><br>
+                        # git pull --rebase = git fetch + git rebase<br>
+                        # - 先fetch，然后rebase当前分支
+                    </div>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+                        pull merge vs pull rebase:
+                        
+                        场景: 本地和远程都有新提交
+                        
+                        pull merge (默认):
+                        
+                        远程main:    A ← B ← C
+                        本地main:    A ← B ← D
+                        pull后:      A ← B ← C ← E ← D
+                                      \_____/
+                                   (merge commit)
+                        
+                        pull rebase:
+                        
+                        远程main:    A ← B ← C
+                        本地main:    A ← B ← D
+                        pull后:      A ← B ← C ← D'
+                                              (rebased)
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">分支追踪关系查看</h4>
+                    <div class="example-box">
+                        # 查看分支和上游关系<br>
+                        git branch -vv<br><br>
+                        # 输出示例：<br>
+                        # * main    abc123 [origin/main: ahead 2, behind 1] Add feature<br>
+                        #   develop def456 [origin/develop] Update code<br>
+                        #   feature ghi789 [origin/feature: gone] Old feature<br><br>
+                        # 含义：<br>
+                        # - ahead 2: 本地领先远程2个提交<br>
+                        # - behind 1: 本地落后远程1个提交<br>
+                        # - gone: 远程分支已被删除<br><br>
+                        # 查看远程分支详情<br>
+                        git remote show origin<br><br>
+                        # 查看本地和远程的差异<br>
+                        git log HEAD..origin/main
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">远程分支删除与清理</h4>
+                    <div class="example-box">
+                        # 删除远程分支<br>
+                        git push origin --delete feature<br>
+                        # 或<br>
+                        git push origin :feature<br><br>
+                        # 删除本地已删除的远程分支引用<br>
+                        git fetch --prune<br>
+                        # 或<br>
+                        git remote prune origin<br><br>
+                        # 查看已删除的远程分支引用<br>
+                        git branch -r --merged<br>
+                        git branch -r --no-merged
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">多远程仓库管理</h4>
+                    <p class="mb-3">一个本地仓库可以关联多个远程仓库。</p>
+                    
+                    <div class="example-box">
+                        # 添加多个远程仓库<br>
+                        git remote add origin https://github.com/user/repo.git<br>
+                        git remote add upstream https://github.com/original/repo.git<br>
+                        git remote add fork https://github.com/fork/repo.git<br><br>
+                        # 查看所有远程仓库<br>
+                        git remote -v<br><br>
+                        # 从不同远程拉取<br>
+                        git fetch origin<br>
+                        git fetch upstream<br><br>
+                        # 推送到不同远程<br>
+                        git push origin main<br>
+                        git push fork feature<br><br>
+                        # 删除远程仓库<br>
+                        git remote remove fork
+                    </div>
+                    
+                    <div style="background: #f6f8fa; padding: 1.5rem; border-radius: 6px; border: 1px solid #e1e8ed; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        <pre style="margin: 0; color: #333;">
+多远程仓库配置（.git/config）:
+[remote "origin"]
+    url = https://github.com/user/repo.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+
+[remote "upstream"]
+    url = https://github.com/original/repo.git
+    fetch = +refs/heads/*:refs/remotes/upstream/*
+
+常用场景: Fork项目
+- origin: 自己的fork仓库
+- upstream: 原始项目仓库
+- 定期从upstream获取更新，推送到origin
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">远程分支同步最佳实践</h4>
+                    <div class="example-box">
+                        # 1. 定期获取更新<br>
+                        git fetch --all --prune<br><br>
+                        # 2. 查看状态再操作<br>
+                        git status<br>
+                        git branch -vv<br><br>
+                        # 3. 使用rebase保持历史整洁<br>
+                        git pull --rebase<br><br>
+                        # 4. 推送前先拉取<br>
+                        git pull --rebase origin main<br>
+                        git push origin main<br><br>
+                        # 5. 谨慎使用强制推送<br>
+                        git push --force-with-lease  # 比较安全<br>
+                        # 而不是<br>
+                        git push --force  # 危险
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <i class="bi bi-lightbulb"></i>
+                <strong>提示：</strong>理解本地和远程分支的关系是协作开发的基础。记住：远程分支是只读的本地引用，通过fetch/push同步。使用<code>git fetch --prune</code>定期清理已删除的远程分支引用。
             </div>
         </div>
     </main>
