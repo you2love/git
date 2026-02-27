@@ -374,6 +374,21 @@
                 </ul>
             </li>
 
+            <!-- 代码管理软件 -->
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#tools-nav">
+                    <i class="bi bi-github"></i>
+                    <span>代码管理软件</span>
+                    <span class="expand-icon"></span>
+                </a>
+                <ul class="sidebar-subnav collapse" id="tools-nav">
+                    <li><a class="sidebar-subnav-link" data-section="tools-gui">GUI 图形界面</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="tools-platform">代码托管平台</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="tools-client">客户端工具</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="tools-ide">IDE 集成</a></li>
+                </ul>
+            </li>
+
             <!-- 分支管理 -->
             <li class="sidebar-nav-item">
                 <a class="sidebar-nav-link nav-toggle collapsed" data-bs-toggle="collapse" href="#branching-nav">
@@ -825,6 +840,302 @@
             <div class="tip-box">
                 <i class="bi bi-lightbulb"></i>
                 <strong>提示：</strong>Git是分布式版本控制系统，专注于文本文件的版本追踪。对于不适用Git的场景，选择专门的工具往往更高效。合理使用.gitignore可以避免将不需要的文件纳入版本控制。
+            </div>
+        </div>
+
+        <!-- 代码管理软件内容 -->
+        <div id="content-tools-gui" class="content-section">
+            <h2 class="section-title">GUI 图形界面工具</h2>
+            <p class="description">图形化Git客户端，让版本控制更加直观便捷。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Sourcetree</h4>
+                    <p class="mb-3">免费且功能强大的Git客户端，支持Windows和Mac。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 免费开源<br>
+                        ✅ 中文界面支持<br>
+                        ✅ Git Flow可视化<br>
+                        ✅ 内置Diff工具<br>
+                        下载地址：<a href="https://www.sourcetreeapp.com/" target="_blank">sourcetreeapp.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">GitKraken</h4>
+                    <p class="mb-3">现代化Git客户端，界面美观功能丰富。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 跨平台支持<br>
+                        ✅ 可视化分支图<br>
+                        ✅ 内置代码编辑器<br>
+                        ✅ 支持GitHub/GitLab集成<br>
+                        下载地址：<a href="https://www.gitkraken.com/" target="_blank">gitkraken.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">GitHub Desktop</h4>
+                    <p class="mb-3">GitHub官方桌面客户端，专为GitHub用户设计。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 简洁易用<br>
+                        ✅ GitHub深度集成<br>
+                        ✅ Pull Request支持<br>
+                        ✅ 分支管理便捷<br>
+                        下载地址：<a href="https://desktop.github.com/" target="_blank">desktop.github.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">TortoiseGit</h4>
+                    <p class="mb-3">Windows资源管理器集成型Git客户端。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 右键菜单集成<br>
+                        ✅ 无需离开资源管理器<br>
+                        ✅ 中文界面支持<br>
+                        ✅ 稳定可靠<br>
+                        下载地址：<a href="https://tortoisegit.org/" target="_blank">tortoisegit.org</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">lazygit</h4>
+                    <p class="mb-3">终端里的Git UI工具，轻量级且高效。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 终端界面<br>
+                        ✅ 键盘操作<br>
+                        ✅ 资源占用极低<br>
+                        ✅ 支持自定义<br>
+                        安装：brew install lazygit
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-tools-platform" class="content-section">
+            <h2 class="section-title">代码托管平台</h2>
+            <p class="description">主流的在线Git代码托管服务。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">GitHub</h4>
+                    <p class="mb-3">全球最大的开源代码托管平台。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 全球最大开源社区<br>
+                        ✅ GitHub Actions CI/CD<br>
+                        ✅ Pull Request功能<br>
+                        ✅ GitHub Pages静态托管<br>
+                        ✅ Copilot AI编程助手<br>
+                        官网：<a href="https://github.com" target="_blank">github.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">GitLab</h4>
+                    <p class="mb-3">一站式DevOps平台，支持自托管。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 支持自托管部署<br>
+                        ✅ 内置CI/CD流水线<br>
+                        ✅ 代码审查功能强大<br>
+                        ✅ 权限管理灵活<br>
+                        ✅ GitLab Duo AI助手<br>
+                        官网：<a href="https://gitlab.com" target="_blank">gitlab.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Gitee (码云)</h4>
+                    <p class="mb-3">国内领先的代码托管平台，访问速度快。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 国内访问速度快<br>
+                        ✅ 中文界面<br>
+                        ✅ 私有仓库免费<br>
+                        ✅ Gitee CI持续集成<br>
+                        ✅ 企业版支持<br>
+                        官网：<a href="https://gitee.com" target="_blank">gitee.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Bitbucket</h4>
+                    <p class="mb-3">Atlassian旗下的代码托管服务。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ 免费私有仓库<br>
+                        ✅ Jira集成<br>
+                        ✅ Bitbucket Pipelines<br>
+                        ✅ Azure DevOps集成<br>
+                        官网：<a href="https://bitbucket.org" target="_blank">bitbucket.org</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Azure DevOps</h4>
+                    <p class="mb-3">微软的企业级DevOps平台。</p>
+                    <div class="example-box">
+                        特点：<br>
+                        ✅ Azure Repos代码托管<br>
+                        ✅ Azure Pipelines CI/CD<br>
+                        ✅ Azure Boards项目管理<br>
+                        ✅ 企业级安全合规<br>
+                        官网：<a href="https://azure.microsoft.com/services/devops/" target="_blank">azure.microsoft.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-tools-client" class="content-section">
+            <h2 class="section-title">客户端工具</h2>
+            <p class="description">增强Git使用体验的终端工具和助手。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Git CLI 增强工具</h4>
+                    <div class="example-box">
+                        <strong>gh (GitHub CLI)</strong><br>
+                        # 安装<br>
+                        brew install gh<br><br>
+                        # 常用命令<br>
+                        gh auth login          # 登录<br>
+                        gh repo create        # 创建仓库<br>
+                        gh pr create          # 创建PR<br>
+                        gh pr review          # 审查PR<br>
+                        gh issue create       # 创建Issue
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">glab (GitLab CLI)</h4>
+                    <div class="example-box">
+                        # 安装<br>
+                        brew install glab<br><br>
+                        # 常用命令<br>
+                        glab auth login       # 登录<br>
+                        glab mr create       # 创建MR<br>
+                        glab mr view         # 查看MR<br>
+                        glab issue list       # 列出Issue
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">tig</h4>
+                    <p class="mb-3">终端Git可视化工具。</p>
+                    <div class="example-box">
+                        # 安装<br>
+                        brew install tig<br><br>
+                        # 使用<br>
+                        tig                  # 查看提交历史<br>
+                        tig status           # 查看状态<br>
+                        tig blame            # 查看文件修改历史
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Git Credential Manager</h4>
+                    <p class="mb-3">安全的凭证管理工具。</p>
+                    <div class="example-box">
+                        # macOS Keychain 集成<br>
+                        git config --global credential.helper osxkeychain<br><br>
+                        # Windows Credential Manager<br>
+                        git config --global credential.helper manager<br><br>
+                        # GCM Core (跨平台)<br>
+                        brew install git-credential-manager-core
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-tools-ide" class="content-section">
+            <h2 class="section-title">IDE 集成</h2>
+            <p class="description">主流IDE中的Git集成功能。</p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">VS Code</h4>
+                    <div class="example-box">
+                        内置Git功能：<br>
+                        ✅ 源代码管理视图<br>
+                        ✅ 分支切换<br>
+                        ✅ 提交和推送<br>
+                        ✅ 冲突解决<br>
+                        ✅ GitLens插件扩展<br><br>
+                        常用快捷键：<br>
+                        Ctrl+Shift+G    打开Git视图<br>
+                        Ctrl+Enter      提交
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">IntelliJ IDEA / JetBrains系列</h4>
+                    <div class="example-box">
+                        强大Git集成：<br>
+                        ✅ 可视化分支图<br>
+                        ✅ 智能合并冲突<br>
+                        ✅ 历史记录分析<br>
+                        ✅ 内置Diff工具<br>
+                        ✅ Shelve暂存功能<br><br>
+                        VCS → Git 菜单访问
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Visual Studio</h4>
+                    <div class="example-box">
+                        Team Explorer：<br>
+                        ✅ Git仓库管理<br>
+                        ✅ 更改视图<br>
+                        ✅ 分支管理<br>
+                        ✅ 同步操作<br>
+                        ✅ 连接Azure DevOps
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Eclipse (EGit)</h4>
+                    <div class="example-box">
+                        EGit插件功能：<br>
+                        ✅ 提交历史视图<br>
+                        ✅ 分支操作<br>
+                        ✅ 冲突解决向导<br>
+                        ✅ Git仓库探索器<br><br>
+                        安装：Help → Eclipse Marketplace → 搜索 EGit
+                    </div>
+                </div>
             </div>
         </div>
 
