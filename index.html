@@ -385,6 +385,7 @@
                     <li><a class="sidebar-subnav-link" data-section="tools-gui">GUI 图形界面</a></li>
                     <li><a class="sidebar-subnav-link" data-section="tools-platform">国外托管平台</a></li>
                     <li><a class="sidebar-subnav-link" data-section="tools-platform-cn">国内托管平台</a></li>
+                    <li><a class="sidebar-subnav-link" data-section="tools-selfhosted">自托管服务</a></li>
                     <li><a class="sidebar-subnav-link" data-section="tools-client">客户端工具</a></li>
                     <li><a class="sidebar-subnav-link" data-section="tools-ide">IDE 集成</a></li>
                 </ul>
@@ -1113,133 +1114,108 @@
             </div>
         </div>
 
-        <div id="content-tools-client" class="content-section">
-            <h2 class="section-title">客户端工具</h2>
-            <p class="description">增强Git使用体验的终端工具和助手。</p>
+        <div id="content-tools-selfhosted" class="content-section">
+            <h2 class="section-title">自托管Git服务</h2>
+            <p class="description">可以部署在自有服务器上的Git托管解决方案。</p>
             
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mb-3">Git CLI 增强工具</h4>
+                    <h4 class="mb-3">Gogs</h4>
+                    <p class="mb-3">轻量级的自托管Git服务，完全开源免费。</p>
                     <div class="example-box">
-                        <strong>gh (GitHub CLI)</strong><br>
-                        # 安装<br>
-                        brew install gh<br><br>
-                        # 常用命令<br>
-                        gh auth login          # 登录<br>
-                        gh repo create        # 创建仓库<br>
-                        gh pr create          # 创建PR<br>
-                        gh pr review          # 审查PR<br>
-                        gh issue create       # 创建Issue
+                        特点：<br>
+                        ✅ 极其轻量（资源占用少）<br>
+                        ✅ 易于安装和配置<br>
+                        ✅ 支持MySQL、PostgreSQL、SQLite<br>
+                        ✅ 中文界面<br>
+                        ✅ 支持Markdown和WiKi<br>
+                        ✅ Webhooks和Git钩子<br><br>
+                        GitHub：<a href="https://github.com/gogs/gogs" target="_blank">gogs/gogs</a>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mb-3">glab (GitLab CLI)</h4>
+                    <h4 class="mb-3">Gitea</h4>
+                    <p class="mb-3">Gogs的社区fork，功能更丰富。</p>
                     <div class="example-box">
-                        # 安装<br>
-                        brew install glab<br><br>
-                        # 常用命令<br>
-                        glab auth login       # 登录<br>
-                        glab mr create       # 创建MR<br>
-                        glab mr view         # 查看MR<br>
-                        glab issue list       # 列出Issue
+                        特点：<br>
+                        ✅ Gogs的增强版<br>
+                        ✅ 更多功能特性<br>
+                        ✅ 活跃的社区支持<br>
+                        ✅ 支持Docker部署<br>
+                        ✅ LDAP/OAuth认证<br>
+                        ✅ 问题跟踪和PR<br><br>
+                        GitHub：<a href="https://github.com/go-gitea/gitea" target="_blank">go-gitea/gitea</a>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mb-3">tig</h4>
-                    <p class="mb-3">终端Git可视化工具。</p>
+                    <h4 class="mb-3">GitLab CE/EE</h4>
+                    <p class="mb-3">GitLab开源版，可完全自托管。</p>
                     <div class="example-box">
-                        # 安装<br>
-                        brew install tig<br><br>
-                        # 使用<br>
-                        tig                  # 查看提交历史<br>
-                        tig status           # 查看状态<br>
-                        tig blame            # 查看文件修改历史
+                        特点：<br>
+                        ✅ 功能最全面<br>
+                        ✅ 支持Docker/K8s部署<br>
+                        ✅ 内置CI/CD<br>
+                        ✅ 权限管理完善<br>
+                        ✅ 高可用架构<br>
+                        ✅ 社区版免费<br><br>
+                        官网：<a href="https://about.gitlab.com/install/" target="_blank">gitlab.com/install</a>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mb-3">Git Credential Manager</h4>
-                    <p class="mb-3">安全的凭证管理工具。</p>
+                    <h4 class="mb-3">Forgejo</h4>
+                    <p class="mb-3">从Gitea社区分叉的轻量级Git服务。</p>
                     <div class="example-box">
-                        # macOS Keychain 集成<br>
-                        git config --global credential.helper osxkeychain<br><br>
-                        # Windows Credential Manager<br>
-                        git config --global credential.helper manager<br><br>
-                        # GCM Core (跨平台)<br>
-                        brew install git-credential-manager-core
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="content-tools-ide" class="content-section">
-            <h2 class="section-title">IDE 集成</h2>
-            <p class="description">主流IDE中的Git集成功能。</p>
-            
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="mb-3">VS Code</h4>
-                    <div class="example-box">
-                        内置Git功能：<br>
-                        ✅ 源代码管理视图<br>
-                        ✅ 分支切换<br>
-                        ✅ 提交和推送<br>
-                        ✅ 冲突解决<br>
-                        ✅ GitLens插件扩展<br><br>
-                        常用快捷键：<br>
-                        Ctrl+Shift+G    打开Git视图<br>
-                        Ctrl+Enter      提交
+                        特点：<br>
+                        ✅ Gitea社区分叉<br>
+                        ✅ 专注于简单易用<br>
+                        ✅ 完全开源<br>
+                        ✅ Docker支持<br>
+                        ✅ 轻量级要求<br>
+                        ✅ 治理透明<br><br>
+                        官网：<a href="https://forgejo.org/" target="_blank">forgejo.org</a>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mb-3">IntelliJ IDEA / JetBrains系列</h4>
+                    <h4 class="mb-3">GitBlit</h4>
+                    <p class="mb-3">纯Java写的Git仓库管理工具。</p>
                     <div class="example-box">
-                        强大Git集成：<br>
-                        ✅ 可视化分支图<br>
-                        ✅ 智能合并冲突<br>
-                        ✅ 历史记录分析<br>
-                        ✅ 内置Diff工具<br>
-                        ✅ Shelve暂存功能<br><br>
-                        VCS → Git 菜单访问
+                        特点：<br>
+                        ✅ 纯Java实现<br>
+                        ✅ 无数据库依赖<br>
+                        ✅ 易于部署<br>
+                        ✅ 管理界面友好<br>
+                        ✅ Groovy支持<br>
+                        ✅ 适合小团队<br><br>
+                        官网：<a href="https://gitblit.com/" target="_blank">gitblit.com</a>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mb-3">Visual Studio</h4>
+                    <h4 class="mb-3">搭建推荐</h4>
                     <div class="example-box">
-                        Team Explorer：<br>
-                        ✅ Git仓库管理<br>
-                        ✅ 更改视图<br>
-                        ✅ 分支管理<br>
-                        ✅ 同步操作<br>
-                        ✅ 连接Azure DevOps
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="mb-3">Eclipse (EGit)</h4>
-                    <div class="example-box">
-                        EGit插件功能：<br>
-                        ✅ 提交历史视图<br>
-                        ✅ 分支操作<br>
-                        ✅ 冲突解决向导<br>
-                        ✅ Git仓库探索器<br><br>
-                        安装：Help → Eclipse Marketplace → 搜索 EGit
+                        推荐部署方案：<br><br>
+                        <strong>个人/小团队</strong><br>
+                        → Gogs 或 Forgejo（轻量）<br><br>
+                        <strong>中等规模团队</strong><br>
+                        → Gitea（功能丰富）<br><br>
+                        <strong>企业级需求</strong><br>
+                        → GitLab CE/EE（功能全面）<br><br>
+                        <strong>Docker快速部署</strong><br>
+                        docker run -d --name gitea -p 3000:3000 -p 2222:22 -v gitea:/data gitea/gitea:latest
                     </div>
                 </div>
             </div>
